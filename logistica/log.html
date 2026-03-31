@@ -504,7 +504,7 @@ const API = '/api';
 let state = {
   user: null, token: null, view: 'dashboard',
   pendingCallIds: new Set(), pendingShipIds: new Set(), pendingExpIds: new Set(),
-  soundInterval: null, pollInterval: null, tvInterval: null, tvSoundInterval: null, hasPendingCalls: false, hasPendingShips: false,
+  soundInterval: null, pollInterval: null, tvInterval: null, tvSoundInterval: null, hasPendingCalls: false, hasPendingShips: false, tvPendingCallIds: new Set(),
   locations: [],
 };
 
@@ -561,11 +561,11 @@ function stopPendingCallsSound() {
   document.getElementById('soundIndicator').style.display = 'none';
 }
 
-// Som do painel de TV: toca a cada 2 minutos enquanto houver chamado OU demanda pendente
+// Som do painel de TV: toca imediatamente em novos chamados e a cada 2 minutos
 function hasTVPending() { return state.hasPendingCalls || state.hasPendingShips; }
-function startTVSound() {
+function startTVSoundInterval() {
+  // Apenas garante que o interval de 2 min está rodando — não toca som aqui
   if (state.tvSoundInterval) return;
-  playNotification();
   state.tvSoundInterval = setInterval(() => {
     if (hasTVPending()) playNotification(); else stopTVSound();
   }, 2 * 60 * 1000);
@@ -758,19 +758,18 @@ async function refreshTV() {
   document.getElementById('tvPendingCount').textContent = `${pending.length} pendente(s)`;
   document.getElementById('tvProgressCount').textContent = `${inProg.length} em andamento`;
 
-  // Som do TV: toca a cada 2 min enquanto houver chamado OU demanda pendente
-  const pendingShips = ships.filter(s => s.status === 'pending');
-  const hadAnyBefore = hasTVPending();
-  state.hasPendingCalls = pending.length > 0;
-  state.hasPendingShips = pendingShips.length > 0;
-  state.pendingCallIds  = new Set(pending.map(c=>c.id));
+  // Som do TV: toca imediatamente a cada novo chamado + interval de 2 min
+  const pendingShips  = ships.filter(s => s.status === 'pending');
+  const newPendingIds = new Set(pending.map(c => c.id));
+  const hasNewCalls   = [...newPendingIds].some(id => !state.tvPendingCallIds.has(id));
+
+  state.hasPendingCalls  = pending.length > 0;
+  state.hasPendingShips  = pendingShips.length > 0;
+  state.tvPendingCallIds = newPendingIds;   // usa set próprio do TV (não sobrescreve poll)
 
   if (hasTVPending()) {
-    if (!hadAnyBefore) {
-      // Novos itens: para interval anterior e reinicia para tocar imediatamente
-      stopTVSound();
-    }
-    startTVSound();
+    if (hasNewCalls) playNotification();    // toca imediatamente a cada novo chamado
+    startTVSoundInterval();                 // garante interval de 2 min rodando
   } else {
     stopTVSound();
   }
