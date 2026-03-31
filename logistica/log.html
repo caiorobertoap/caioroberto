@@ -87,19 +87,19 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
 .avisos-box li { font-size: 12px; color: #78350f; margin-bottom: 4px; line-height: 1.5; }
 
 /* ── TV PANEL ──────────────────────────────────────── */
-#tvPanel { display: none; position: fixed; inset: 0; z-index: 200; overflow: hidden; flex-direction: column; background: #020b14; }
+#tvPanel { display: none; position: fixed; inset: 0; z-index: 200; overflow: hidden; flex-direction: column; background: #021212; }
 
 /* TV animated background */
 #tvPanel::before {
   content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
-  background: radial-gradient(ellipse 80% 50% at 20% 0%, rgba(14,165,233,.07) 0%, transparent 60%),
-              radial-gradient(ellipse 60% 40% at 80% 100%, rgba(99,102,241,.06) 0%, transparent 60%);
+  background: radial-gradient(ellipse 80% 50% at 20% 0%, rgba(15,174,170,.09) 0%, transparent 60%),
+              radial-gradient(ellipse 60% 40% at 80% 100%, rgba(0,122,130,.07) 0%, transparent 60%);
 }
 
 /* TV header */
 .tv-header {
-  background: linear-gradient(90deg, #071627 0%, #0c2340 40%, #071a30 70%, #071627 100%);
-  border-bottom: 1px solid rgba(14,165,233,.2);
+  background: linear-gradient(90deg, #021a1a 0%, #03302f 40%, #021f1f 70%, #021a1a 100%);
+  border-bottom: 1px solid rgba(15,174,170,.25);
   padding: 14px 28px;
   position: relative; z-index: 1;
   box-shadow: 0 2px 24px rgba(0,0,0,.5);
@@ -129,12 +129,12 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
   background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
 }
 .tv-card-pending {
-  border-color: rgba(251,191,36,.45);
-  background: linear-gradient(135deg, rgba(251,191,36,.07) 0%, rgba(245,158,11,.02) 100%);
+  border-color: rgba(15,174,170,.5);
+  background: linear-gradient(135deg, rgba(15,174,170,.08) 0%, rgba(0,122,130,.03) 100%);
 }
 .tv-card-progress {
-  border-color: rgba(16,185,129,.45);
-  background: linear-gradient(135deg, rgba(16,185,129,.08) 0%, rgba(5,150,105,.03) 100%);
+  border-color: rgba(0,122,130,.5);
+  background: linear-gradient(135deg, rgba(0,122,130,.1) 0%, rgba(15,174,170,.04) 100%);
 }
 .tv-card-emergency {
   border-color: rgba(239,68,68,.55);
@@ -143,27 +143,34 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
 
 @keyframes tv-blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 .tv-blink { animation: tv-blink 1.4s ease-in-out infinite; }
-@keyframes tv-glow-pending { 0%,100%{box-shadow:0 0 18px rgba(251,191,36,.12),0 4px 20px rgba(0,0,0,.4)} 50%{box-shadow:0 0 36px rgba(251,191,36,.28),0 4px 20px rgba(0,0,0,.4)} }
+@keyframes tv-glow-pending { 0%,100%{box-shadow:0 0 18px rgba(15,174,170,.15),0 4px 20px rgba(0,0,0,.4)} 50%{box-shadow:0 0 36px rgba(15,174,170,.35),0 4px 20px rgba(0,0,0,.4)} }
 .tv-card-pending { animation: tv-glow-pending 2.4s ease-in-out infinite; }
-@keyframes tv-glow-progress { 0%,100%{box-shadow:0 0 14px rgba(16,185,129,.1),0 4px 16px rgba(0,0,0,.4)} 50%{box-shadow:0 0 28px rgba(16,185,129,.22),0 4px 16px rgba(0,0,0,.4)} }
+@keyframes tv-glow-progress { 0%,100%{box-shadow:0 0 14px rgba(0,122,130,.15),0 4px 16px rgba(0,0,0,.4)} 50%{box-shadow:0 0 28px rgba(0,122,130,.3),0 4px 16px rgba(0,0,0,.4)} }
 .tv-card-progress { animation: tv-glow-progress 3s ease-in-out infinite; }
 
 /* TV badge */
 .tv-badge { padding: 4px 12px; border-radius: 20px; font-size: clamp(10px, 1vw, 13px); font-weight: 700; letter-spacing:.3px; }
-.tv-badge-pending  { background: rgba(251,191,36,.15); color: #fcd34d; border: 1px solid rgba(251,191,36,.35); }
-.tv-badge-progress { background: rgba(16,185,129,.15); color: #34d399; border: 1px solid rgba(16,185,129,.35); }
+.tv-badge-pending  { background: rgba(15,174,170,.15); color: #0faeaa; border: 1px solid rgba(15,174,170,.4); }
+.tv-badge-progress { background: rgba(0,122,130,.2);   color: #4dd9d5; border: 1px solid rgba(0,122,130,.45); }
 .tv-badge-emergency{ background: rgba(239,68,68,.2);   color: #f87171; border: 1px solid rgba(239,68,68,.4); }
 
 /* TV scrollbar */
 #tvCallsList::-webkit-scrollbar, #tvShipsList::-webkit-scrollbar { width: 3px; }
 #tvCallsList::-webkit-scrollbar-track, #tvShipsList::-webkit-scrollbar-track { background: transparent; }
-#tvCallsList::-webkit-scrollbar-thumb, #tvShipsList::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 2px; }
+#tvCallsList::-webkit-scrollbar-thumb, #tvShipsList::-webkit-scrollbar-thumb { background: rgba(15,174,170,.2); border-radius: 2px; }
 
 /* TV cards: sempre coluna vertical, sem grid */
 #tvCallsList, #tvShipsList {
   display: flex !important;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  min-height: 0; /* essencial para overflow-y funcionar dentro de flex */
+}
+
+/* Cada card tem altura mínima fixa — nunca comprime */
+.tv-card {
+  min-height: 100px;
+  flex-shrink: 0 !important;
 }
 
 /* Texto dos cards: responsivo via clamp (funciona em TV e telas menores) */
@@ -172,32 +179,7 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
 .tv-card-desc   { font-size: clamp(9px,  0.8vw, 11px) !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tv-driver-name { font-size: clamp(10px, 1.1vw, 13px) !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 
-/* Modo compacto: cards menores, descrição oculta */
-#tvCallsList.tv-compact .tv-card,
-#tvShipsList.tv-compact .tv-card {
-  padding: 6px 10px !important;
-  border-radius: 8px;
-}
-#tvCallsList.tv-compact .tv-card-title,
-#tvShipsList.tv-compact .tv-card-title {
-  font-size: clamp(10px, 1.1vw, 13px) !important;
-}
-#tvCallsList.tv-compact .tv-card-sub,
-#tvShipsList.tv-compact .tv-card-sub {
-  font-size: clamp(8px, 0.7vw, 10px) !important;
-}
-#tvCallsList.tv-compact .tv-card-driver,
-#tvShipsList.tv-compact .tv-card-driver {
-  padding: 3px 7px !important;
-}
-#tvCallsList.tv-compact .tv-driver-name,
-#tvShipsList.tv-compact .tv-driver-name {
-  font-size: clamp(9px, 0.9vw, 11px) !important;
-}
-#tvCallsList.tv-compact .tv-card-desc,
-#tvShipsList.tv-compact .tv-card-desc {
-  display: none !important;
-}
+/* Modo compacto removido — cards sempre com tamanho fixo e scroll */
 
 /* ── SOUND INDICATOR ───────────────────────────────── */
 #soundIndicator { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg,#ef4444,#dc2626); color: #fff; padding: 10px 22px; border-radius: 30px; font-size: 13px; font-weight: 700; z-index: 300; display: none; box-shadow: 0 4px 20px rgba(239,68,68,.5); white-space: nowrap; }
@@ -239,30 +221,30 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
 <!-- ================================================
      LOGIN PAGE
 ================================================ -->
-<div id="loginPage" class="hidden min-h-screen flex items-center justify-center" style="background:linear-gradient(135deg,#1a0508 0%,#3d0d14 50%,#1a0508 100%);position:relative;overflow:hidden">
+<div id="loginPage" class="hidden min-h-screen flex items-center justify-center" style="background:linear-gradient(135deg,#011414 0%,#032e2d 50%,#011414 100%);position:relative;overflow:hidden">
 
   <!-- Background blobs -->
-  <div style="position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(229,57,53,.1) 0%,transparent 65%);top:-200px;left:-200px;pointer-events:none"></div>
-  <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(183,28,28,.08) 0%,transparent 65%);bottom:-150px;right:-150px;pointer-events:none"></div>
+  <div style="position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(15,174,170,.12) 0%,transparent 65%);top:-200px;left:-200px;pointer-events:none"></div>
+  <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(0,122,130,.09) 0%,transparent 65%);bottom:-150px;right:-150px;pointer-events:none"></div>
   <div style="position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><circle cx=%2220%22 cy=%2220%22 r=%221%22 fill=%22rgba(255,255,255,.03)%22/></svg>');pointer-events:none"></div>
 
   <!-- Login card -->
-  <div id="loginPanel" style="position:relative;z-index:1;width:100%;max-width:420px;margin:20px;background:rgba(255,255,255,.06);border:1px solid rgba(229,57,53,.2);border-radius:28px;padding:44px 40px;backdrop-filter:blur(20px);box-shadow:0 32px 80px rgba(0,0,0,.6)">
+  <div id="loginPanel" style="position:relative;z-index:1;width:100%;max-width:420px;margin:20px;background:rgba(255,255,255,.05);border:1px solid rgba(15,174,170,.2);border-radius:28px;padding:44px 40px;backdrop-filter:blur(20px);box-shadow:0 32px 80px rgba(0,0,0,.6)">
 
     <!-- Logo -->
     <div style="text-align:center;margin-bottom:36px">
       <div style="position:relative;display:inline-block;margin-bottom:18px">
         <!-- Fallback sempre visível, logo sobrepõe se carregar -->
-        <div id="lgIconFallback" style="width:88px;height:88px;border-radius:24px;background:linear-gradient(135deg,#e53935,#b71c1c);display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 8px 32px rgba(229,57,53,.45)">
+        <div id="lgIconFallback" style="width:88px;height:88px;border-radius:24px;background:linear-gradient(135deg,#0faeaa,#007a82);display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 8px 32px rgba(15,174,170,.45)">
           <i class="fas fa-flask" style="color:#fff;font-size:36px"></i>
         </div>
         <img src="Logo-Menu.webp" alt="Medclin" id="loginLogo"
-             style="position:absolute;inset:0;width:88px;height:88px;object-fit:contain;border-radius:24px;display:none;filter:drop-shadow(0 0 16px rgba(229,57,53,.5))"
+             style="position:absolute;inset:0;width:88px;height:88px;object-fit:contain;border-radius:24px;display:none;filter:drop-shadow(0 0 16px rgba(15,174,170,.5))"
              onload="this.style.display='block';document.getElementById('lgIconFallback').style.display='none'"
              onerror="this.style.display='none'">
       </div>
       <h1 style="color:#fff;font-size:22px;font-weight:900;letter-spacing:-.4px;margin:0 0 5px">NTO Logística Laboratorial</h1>
-      <p style="color:#ef9a9a;font-size:13px;font-weight:600;margin:0;letter-spacing:.3px">Laboratórios Medclin</p>
+      <p style="color:#4dd9d5;font-size:13px;font-weight:600;margin:0;letter-spacing:.3px">Laboratórios Medclin</p>
     </div>
 
     <!-- Error -->
@@ -273,40 +255,40 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
       <label style="display:block;color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px">E-mail</label>
       <input type="email" id="loginEmail" placeholder="seu@email.com"
              style="width:100%;padding:13px 15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#f1f5f9;font-size:14px;outline:none;transition:border .2s;box-sizing:border-box"
-             onfocus="this.style.borderColor='rgba(229,57,53,.6)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
+             onfocus="this.style.borderColor='rgba(15,174,170,.7)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
     </div>
     <div style="margin-bottom:8px">
       <label style="display:block;color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px">Senha</label>
       <input type="password" id="loginPassword" placeholder="••••••••"
              style="width:100%;padding:13px 15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#f1f5f9;font-size:14px;outline:none;transition:border .2s;box-sizing:border-box"
-             onfocus="this.style.borderColor='rgba(229,57,53,.6)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'"
+             onfocus="this.style.borderColor='rgba(15,174,170,.7)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'"
              onkeydown="if(event.key==='Enter')doLogin()">
     </div>
 
     <div style="text-align:right;margin-bottom:22px">
-      <button onclick="showForgotPanel()" style="background:none;border:none;color:#ef9a9a;font-size:12px;font-weight:600;cursor:pointer;padding:4px 0">
+      <button onclick="showForgotPanel()" style="background:none;border:none;color:#4dd9d5;font-size:12px;font-weight:600;cursor:pointer;padding:4px 0">
         Esqueceu a senha?
       </button>
     </div>
 
-    <button onclick="doLogin()" style="width:100%;padding:14px;background:linear-gradient(135deg,#e53935,#b71c1c);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(229,57,53,.4);transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:8px"
+    <button onclick="doLogin()" style="width:100%;padding:14px;background:linear-gradient(135deg,#0faeaa,#007a82);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(15,174,170,.4);transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:8px"
             onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
       <i class="fas fa-sign-in-alt"></i> Entrar
     </button>
 
-    <button onclick="openTV()" style="width:100%;margin-top:12px;padding:12px;background:rgba(124,58,237,.15);color:#a78bfa;border:1px solid rgba(124,58,237,.3);border-radius:14px;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px"
-            onmouseover="this.style.background='rgba(124,58,237,.25)'" onmouseout="this.style.background='rgba(124,58,237,.15)'">
+    <button onclick="openTV()" style="width:100%;margin-top:12px;padding:12px;background:rgba(15,174,170,.1);color:#0faeaa;border:1px solid rgba(15,174,170,.3);border-radius:14px;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px"
+            onmouseover="this.style.background='rgba(15,174,170,.2)'" onmouseout="this.style.background='rgba(15,174,170,.1)'">
       <i class="fas fa-tv"></i> Abrir Painel de TV
     </button>
 
-    <p style="text-align:center;color:#4a1515;font-size:11px;margin-top:28px;margin-bottom:0">Desenvolvido por <span style="color:#6b2020;font-weight:700">CRSystems</span></p>
+    <p style="text-align:center;color:#1d5a5c;font-size:11px;margin-top:28px;margin-bottom:0">Desenvolvido por <span style="color:#0faeaa;font-weight:700">CRSystems</span></p>
   </div>
 
   <!-- Forgot Password card -->
-  <div id="forgotPanel" style="display:none;position:relative;z-index:1;width:100%;max-width:420px;margin:20px;background:rgba(255,255,255,.06);border:1px solid rgba(229,57,53,.2);border-radius:28px;padding:40px;backdrop-filter:blur(20px);box-shadow:0 32px 80px rgba(0,0,0,.6)">
+  <div id="forgotPanel" style="display:none;position:relative;z-index:1;width:100%;max-width:420px;margin:20px;background:rgba(255,255,255,.05);border:1px solid rgba(15,174,170,.2);border-radius:28px;padding:40px;backdrop-filter:blur(20px);box-shadow:0 32px 80px rgba(0,0,0,.6)">
     <div style="text-align:center;margin-bottom:28px">
-      <div style="width:60px;height:60px;border-radius:18px;background:rgba(229,57,53,.12);border:1px solid rgba(229,57,53,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
-        <i class="fas fa-key" style="color:#e53935;font-size:24px"></i>
+      <div style="width:60px;height:60px;border-radius:18px;background:rgba(15,174,170,.12);border:1px solid rgba(15,174,170,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+        <i class="fas fa-key" style="color:#0faeaa;font-size:24px"></i>
       </div>
       <h2 style="color:#fff;font-size:20px;font-weight:800;margin:0 0 6px">Recuperar Senha</h2>
       <p style="color:#64748b;font-size:13px;margin:0">Digite seu e-mail e enviaremos um código de recuperação</p>
@@ -365,26 +347,26 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
   <div class="tv-header flex items-center justify-between">
     <div class="flex items-center gap-4">
       <!-- Logo com fallback -->
-      <img src="Logo-Menu.webp" alt="Medclin" style="height:44px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(14,165,233,.3))"
+      <img src="Logo-Menu.webp" alt="Medclin" style="height:44px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(15,174,170,.4))"
            onerror="this.style.display='none';document.getElementById('tvLogoFallback').style.display='flex'">
-      <div id="tvLogoFallback" style="display:none;width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#0ea5e9,#3b82f6);align-items:center;justify-content:center">
+      <div id="tvLogoFallback" style="display:none;width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#0faeaa,#007a82);align-items:center;justify-content:center">
         <i class="fas fa-truck-medical" style="color:#fff;font-size:20px"></i>
       </div>
       <div style="border-left:1px solid rgba(255,255,255,.08);padding-left:16px">
         <div style="color:#fff;font-weight:900;font-size:17px;letter-spacing:-.3px;line-height:1.2">NTO Logística Laboratorial</div>
-        <div style="color:#38bdf8;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-top:2px">Laboratórios Medclin · Painel Operacional</div>
+        <div style="color:#0faeaa;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-top:2px">Laboratórios Medclin · Painel Operacional</div>
       </div>
     </div>
 
     <div class="flex items-center gap-4">
       <!-- Stats pills -->
-      <div class="flex items-center gap-2 px-4 py-2 rounded-full" style="background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25)">
-        <span class="tv-blink inline-block" style="width:8px;height:8px;border-radius:50%;background:#fbbf24"></span>
-        <span style="color:#fcd34d;font-size:13px;font-weight:700" id="tvPendingCount">0 pendente(s)</span>
+      <div class="flex items-center gap-2 px-4 py-2 rounded-full" style="background:rgba(15,174,170,.1);border:1px solid rgba(15,174,170,.3)">
+        <span class="tv-blink inline-block" style="width:8px;height:8px;border-radius:50%;background:#0faeaa"></span>
+        <span style="color:#0faeaa;font-size:13px;font-weight:700" id="tvPendingCount">0 pendente(s)</span>
       </div>
-      <div class="flex items-center gap-2 px-4 py-2 rounded-full" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25)">
-        <span class="inline-block" style="width:8px;height:8px;border-radius:50%;background:#10b981"></span>
-        <span style="color:#34d399;font-size:13px;font-weight:700" id="tvProgressCount">0 em andamento</span>
+      <div class="flex items-center gap-2 px-4 py-2 rounded-full" style="background:rgba(0,122,130,.15);border:1px solid rgba(0,122,130,.35)">
+        <span class="inline-block" style="width:8px;height:8px;border-radius:50%;background:#007a82"></span>
+        <span style="color:#4dd9d5;font-size:13px;font-weight:700" id="tvProgressCount">0 em andamento</span>
       </div>
 
       <!-- Divider -->
@@ -410,8 +392,8 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
     <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid rgba(255,255,255,.04)">
       <div class="tv-col-header">
         <div class="flex items-center gap-3">
-          <div style="width:36px;height:36px;border-radius:10px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.2);display:flex;align-items:center;justify-content:center">
-            <i class="fas fa-vial" style="color:#fbbf24;font-size:15px"></i>
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(15,174,170,.12);border:1px solid rgba(15,174,170,.25);display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-vial" style="color:#0faeaa;font-size:15px"></i>
           </div>
           <div>
             <div style="color:#fff;font-weight:700;font-size:15px">Retirada de Amostras</div>
@@ -420,15 +402,15 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
         </div>
         <span id="tvCallsCount" class="tv-badge tv-badge-pending"></span>
       </div>
-      <div id="tvCallsList" class="flex-1 overflow-y-auto" style="padding:16px;gap:10px;display:flex;flex-direction:column"></div>
+      <div id="tvCallsList" class="flex-1 overflow-y-auto" style="padding:16px;gap:8px;display:flex;flex-direction:column;min-height:0"></div>
     </div>
 
     <!-- Coluna: Envios -->
     <div style="display:flex;flex-direction:column;overflow:hidden">
       <div class="tv-col-header">
         <div class="flex items-center gap-3">
-          <div style="width:36px;height:36px;border-radius:10px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.2);display:flex;align-items:center;justify-content:center">
-            <i class="fas fa-box" style="color:#818cf8;font-size:15px"></i>
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,122,130,.15);border:1px solid rgba(0,122,130,.3);display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-box" style="color:#4dd9d5;font-size:15px"></i>
           </div>
           <div>
             <div style="color:#fff;font-weight:700;font-size:15px">Envios / Retiradas</div>
@@ -437,7 +419,7 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
         </div>
         <span id="tvShipsCount" class="tv-badge tv-badge-progress"></span>
       </div>
-      <div id="tvShipsList" class="flex-1 overflow-y-auto" style="padding:16px;gap:10px;display:flex;flex-direction:column"></div>
+      <div id="tvShipsList" class="flex-1 overflow-y-auto" style="padding:16px;gap:8px;display:flex;flex-direction:column;min-height:0"></div>
     </div>
   </div>
 </div>
@@ -800,26 +782,28 @@ async function refreshTV() {
     stopTVSound();
   }
 
-  // Modo compacto (coluna única, cards menores): ativa com > 5 itens
+  // Cards com tamanho fixo e scroll — novos chamados no topo
   const callsList = document.getElementById('tvCallsList');
   const shipsList = document.getElementById('tvShipsList');
-  callsList.classList.toggle('tv-compact', calls.length > 5);
-  shipsList.classList.toggle('tv-compact', ships.length > 5);
+
+  // Ordenar: mais novos primeiro (topo da lista)
+  const callsSorted = [...calls].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  const shipsSorted = [...ships].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
   // Render calls
-  callsList.innerHTML = calls.length === 0
+  callsList.innerHTML = callsSorted.length === 0
     ? `<div style="text-align:center;margin-top:60px;opacity:.3">
          <i class="fas fa-check-circle" style="font-size:52px;color:#22c55e;display:block;margin-bottom:14px"></i>
          <p style="color:#94a3b8;font-size:15px;font-weight:600">Nenhum chamado ativo</p>
        </div>`
-    : calls.map(c => {
+    : callsSorted.map(c => {
         const prog   = c.status === 'in_progress';
         const isEmg  = c.priority === 'emergency';
         const isUrg  = c.priority === 'urgent';
         const cls    = isEmg ? 'tv-card-emergency' : prog ? 'tv-card-progress' : 'tv-card-pending';
-        const dotColor   = prog ? '#34d399' : isEmg ? '#f87171' : '#fcd34d';
+        const dotColor   = prog ? '#0faeaa' : isEmg ? '#f87171' : '#4dd9d5';
         const statusLabel = prog ? 'Em Andamento' : 'Aguardando';
-        const statusColor = prog ? '#34d399' : '#fcd34d';
+        const statusColor = prog ? '#0faeaa' : '#4dd9d5';
         const driver  = c.assigned_driver_name || '';
         const prioTag = isEmg
           ? `<span style="background:rgba(239,68,68,.2);color:#f87171;border:1px solid rgba(239,68,68,.35);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:800">🚨 EMERGÊNCIA</span>`
@@ -847,30 +831,30 @@ async function refreshTV() {
           </div>
           ${c.description ? `<div class="tv-card-desc" style="color:#94a3b8;font-size:11px;padding:5px 8px;background:rgba(255,255,255,.04);border-radius:7px;border:1px solid rgba(255,255,255,.05);margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(c.description)}</div>` : ''}
           ${driver ? `
-          <div class="tv-card-driver" style="display:flex;align-items:center;gap:7px;padding:6px 10px;background:${prog?'rgba(16,185,129,.1)':'rgba(251,191,36,.06)'};border:1px solid ${prog?'rgba(16,185,129,.25)':'rgba(251,191,36,.2)'};border-radius:9px">
-            <i class="fas fa-user-tie" style="color:${prog?'#34d399':'#fcd34d'};font-size:11px;flex-shrink:0"></i>
-            <div class="tv-driver-name" style="color:${prog?'#6ee7b7':'#fde68a'};font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(driver)}</div>
+          <div class="tv-card-driver" style="display:flex;align-items:center;gap:7px;padding:6px 10px;background:${prog?'rgba(15,174,170,.12)':'rgba(0,122,130,.08)'};border:1px solid ${prog?'rgba(15,174,170,.3)':'rgba(0,122,130,.25)'};border-radius:9px">
+            <i class="fas fa-user-tie" style="color:${prog?'#0faeaa':'#4dd9d5'};font-size:11px;flex-shrink:0"></i>
+            <div class="tv-driver-name" style="color:${prog?'#0faeaa':'#4dd9d5'};font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(driver)}</div>
           </div>` : `
-          <div style="display:flex;align-items:center;gap:7px;padding:6px 10px;background:rgba(251,191,36,.04);border:1px dashed rgba(251,191,36,.2);border-radius:9px">
-            <i class="fas fa-hourglass-half tv-blink" style="color:#78350f;font-size:11px"></i>
-            <span style="color:#78350f;font-size:11px;font-weight:600">Aguardando motorista...</span>
+          <div style="display:flex;align-items:center;gap:7px;padding:6px 10px;background:rgba(0,122,130,.05);border:1px dashed rgba(0,122,130,.2);border-radius:9px">
+            <i class="fas fa-hourglass-half tv-blink" style="color:#007a82;font-size:11px"></i>
+            <span style="color:#007a82;font-size:11px;font-weight:600">Aguardando motorista...</span>
           </div>`}
         </div>`;
       }).join('');
 
   // Render shipments
-  shipsList.innerHTML = ships.length === 0
+  shipsList.innerHTML = shipsSorted.length === 0
     ? `<div style="text-align:center;margin-top:60px;opacity:.3">
          <i class="fas fa-check-circle" style="font-size:52px;color:#22c55e;display:block;margin-bottom:14px"></i>
          <p style="color:#94a3b8;font-size:15px;font-weight:600">Nenhuma demanda ativa</p>
        </div>`
-    : ships.map(s => {
+    : shipsSorted.map(s => {
         const prog      = s.status === 'in_progress';
         const cls       = prog ? 'tv-card-progress' : 'tv-card-pending';
         const tipo      = s.type === 'send' ? 'Envio' : 'Retirada';
         const tipoIcon  = s.type === 'send' ? 'fa-arrow-right' : 'fa-arrow-left';
-        const tipoColor = s.type === 'send' ? '#818cf8' : '#a78bfa';
-        const dotColor  = prog ? '#34d399' : '#fcd34d';
+        const tipoColor = s.type === 'send' ? '#0faeaa' : '#4dd9d5';
+        const dotColor  = prog ? '#007a82' : '#0faeaa';
         const driver    = s.assigned_driver_name || '';
         return `<div class="tv-card ${cls}" style="margin-bottom:0">
           <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px">
@@ -879,7 +863,7 @@ async function refreshTV() {
               <div class="tv-card-sub" style="display:flex;align-items:center;gap:4px;margin-top:3px;flex-wrap:wrap">
                 <i class="fas ${tipoIcon}" style="color:${tipoColor};font-size:10px"></i>
                 <span style="color:#94a3b8;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px">${escHtml(s.destination_name)}</span>
-                <span style="background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.25);padding:1px 7px;border-radius:20px;font-size:10px;font-weight:700;flex-shrink:0">${tipo}</span>
+                <span style="background:rgba(0,122,130,.15);color:#4dd9d5;border:1px solid rgba(0,122,130,.3);padding:1px 7px;border-radius:20px;font-size:10px;font-weight:700;flex-shrink:0">${tipo}</span>
               </div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0">
@@ -894,13 +878,13 @@ async function refreshTV() {
           </div>
           ${s.description ? `<div class="tv-card-desc" style="color:#94a3b8;font-size:11px;padding:5px 8px;background:rgba(255,255,255,.04);border-radius:7px;border:1px solid rgba(255,255,255,.05);margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(s.description)}</div>` : ''}
           ${driver ? `
-          <div class="tv-card-driver" style="display:flex;align-items:center;gap:7px;padding:6px 10px;background:${prog?'rgba(16,185,129,.1)':'rgba(99,102,241,.08)'};border:1px solid ${prog?'rgba(16,185,129,.25)':'rgba(99,102,241,.2)'};border-radius:9px">
-            <i class="fas fa-user-tie" style="color:${prog?'#34d399':'#818cf8'};font-size:11px;flex-shrink:0"></i>
-            <div class="tv-driver-name" style="color:${prog?'#6ee7b7':'#c7d2fe'};font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(driver)}</div>
+          <div class="tv-card-driver" style="display:flex;align-items:center;gap:7px;padding:6px 10px;background:${prog?'rgba(0,122,130,.15)':'rgba(15,174,170,.08)'};border:1px solid ${prog?'rgba(0,122,130,.35)':'rgba(15,174,170,.25)'};border-radius:9px">
+            <i class="fas fa-user-tie" style="color:${prog?'#007a82':'#0faeaa'};font-size:11px;flex-shrink:0"></i>
+            <div class="tv-driver-name" style="color:${prog?'#4dd9d5':'#0faeaa'};font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(driver)}</div>
           </div>` : `
-          <div style="display:flex;align-items:center;gap:7px;padding:6px 10px;background:rgba(251,191,36,.04);border:1px dashed rgba(251,191,36,.2);border-radius:9px">
-            <i class="fas fa-hourglass-half tv-blink" style="color:#78350f;font-size:11px"></i>
-            <span style="color:#78350f;font-size:11px;font-weight:600">Aguardando motorista...</span>
+          <div style="display:flex;align-items:center;gap:7px;padding:6px 10px;background:rgba(0,122,130,.05);border:1px dashed rgba(0,122,130,.2);border-radius:9px">
+            <i class="fas fa-hourglass-half tv-blink" style="color:#007a82;font-size:11px"></i>
+            <span style="color:#007a82;font-size:11px;font-weight:600">Aguardando motorista...</span>
           </div>`}
         </div>`;
       }).join('');
