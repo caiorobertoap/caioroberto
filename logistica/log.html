@@ -116,11 +116,13 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
 
 /* TV call cards */
 .tv-card {
-  border-radius: 16px; padding: 18px 20px;
+  border-radius: 14px; padding: 12px 15px;
   border: 1px solid rgba(255,255,255,.07);
   background: rgba(255,255,255,.025);
   transition: all .4s;
   position: relative; overflow: hidden;
+  flex-shrink: 0; /* nunca comprimir, sempre rolar */
+  min-width: 0;   /* permite truncar texto em flexbox */
 }
 .tv-card::before {
   content:''; position:absolute; top:0; left:0; right:0; height:1px;
@@ -147,7 +149,7 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
 .tv-card-progress { animation: tv-glow-progress 3s ease-in-out infinite; }
 
 /* TV badge */
-.tv-badge { padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; letter-spacing:.3px; }
+.tv-badge { padding: 4px 12px; border-radius: 20px; font-size: clamp(10px, 1vw, 13px); font-weight: 700; letter-spacing:.3px; }
 .tv-badge-pending  { background: rgba(251,191,36,.15); color: #fcd34d; border: 1px solid rgba(251,191,36,.35); }
 .tv-badge-progress { background: rgba(16,185,129,.15); color: #34d399; border: 1px solid rgba(16,185,129,.35); }
 .tv-badge-emergency{ background: rgba(239,68,68,.2);   color: #f87171; border: 1px solid rgba(239,68,68,.4); }
@@ -161,33 +163,36 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
 #tvCallsList, #tvShipsList {
   display: flex !important;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
-/* Modo compacto: reduz tamanho mas mantém coluna única */
+
+/* Texto dos cards: responsivo via clamp (funciona em TV e telas menores) */
+.tv-card-title  { font-size: clamp(11px, 1.4vw, 16px) !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tv-card-sub    { font-size: clamp(9px,  0.8vw, 11px) !important; }
+.tv-card-desc   { font-size: clamp(9px,  0.8vw, 11px) !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tv-driver-name { font-size: clamp(10px, 1.1vw, 13px) !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+
+/* Modo compacto: cards menores, descrição oculta */
 #tvCallsList.tv-compact .tv-card,
 #tvShipsList.tv-compact .tv-card {
-  padding: 7px 11px !important;
-  border-radius: 9px;
+  padding: 6px 10px !important;
+  border-radius: 8px;
 }
 #tvCallsList.tv-compact .tv-card-title,
 #tvShipsList.tv-compact .tv-card-title {
-  font-size: 13px !important;
+  font-size: clamp(10px, 1.1vw, 13px) !important;
 }
 #tvCallsList.tv-compact .tv-card-sub,
 #tvShipsList.tv-compact .tv-card-sub {
-  font-size: 9px !important;
+  font-size: clamp(8px, 0.7vw, 10px) !important;
 }
 #tvCallsList.tv-compact .tv-card-driver,
 #tvShipsList.tv-compact .tv-card-driver {
-  padding: 4px 8px !important;
+  padding: 3px 7px !important;
 }
 #tvCallsList.tv-compact .tv-driver-name,
 #tvShipsList.tv-compact .tv-driver-name {
-  font-size: 11px !important;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
+  font-size: clamp(9px, 0.9vw, 11px) !important;
 }
 #tvCallsList.tv-compact .tv-card-desc,
 #tvShipsList.tv-compact .tv-card-desc {
