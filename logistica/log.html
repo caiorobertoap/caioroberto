@@ -157,17 +157,17 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
 #tvCallsList::-webkit-scrollbar-track, #tvShipsList::-webkit-scrollbar-track { background: transparent; }
 #tvCallsList::-webkit-scrollbar-thumb, #tvShipsList::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 2px; }
 
-/* TV panel grid layout for many items */
-#tvCallsList.tv-compact, #tvShipsList.tv-compact {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr;
+/* TV cards: sempre coluna vertical, sem grid */
+#tvCallsList, #tvShipsList {
+  display: flex !important;
+  flex-direction: column;
   gap: 8px;
-  align-content: start;
 }
+/* Modo compacto: reduz tamanho mas mantém coluna única */
 #tvCallsList.tv-compact .tv-card,
 #tvShipsList.tv-compact .tv-card {
-  padding: 8px 10px !important;
-  border-radius: 8px;
+  padding: 7px 11px !important;
+  border-radius: 9px;
 }
 #tvCallsList.tv-compact .tv-card-title,
 #tvShipsList.tv-compact .tv-card-title {
@@ -175,12 +175,11 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
 }
 #tvCallsList.tv-compact .tv-card-sub,
 #tvShipsList.tv-compact .tv-card-sub {
-  font-size: 10px !important;
+  font-size: 9px !important;
 }
 #tvCallsList.tv-compact .tv-card-driver,
 #tvShipsList.tv-compact .tv-card-driver {
   padding: 4px 8px !important;
-  margin-top: 4px;
 }
 #tvCallsList.tv-compact .tv-driver-name,
 #tvShipsList.tv-compact .tv-driver-name {
@@ -188,7 +187,11 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 120px;
+  max-width: 100%;
+}
+#tvCallsList.tv-compact .tv-card-desc,
+#tvShipsList.tv-compact .tv-card-desc {
+  display: none !important;
 }
 
 /* ── SOUND INDICATOR ───────────────────────────────── */
@@ -312,9 +315,9 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
         <label style="display:block;color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px">E-mail</label>
         <input type="email" id="forgotEmail" placeholder="seu@email.com"
                style="width:100%;padding:13px 15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#f1f5f9;font-size:14px;outline:none;box-sizing:border-box"
-               onfocus="this.style.borderColor='rgba(229,57,53,.6)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
+               onfocus="this.style.borderColor='rgba(14,165,233,.6)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
       </div>
-      <button onclick="doRequestReset()" style="width:100%;padding:13px;background:linear-gradient(135deg,#e53935,#b71c1c);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+      <button onclick="doRequestReset()" style="width:100%;padding:13px;background:linear-gradient(135deg,#0ea5e9,#1d4ed8);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
         <i class="fas fa-paper-plane"></i> Gerar Código
       </button>
     </div>
@@ -507,7 +510,7 @@ const API = '/api';
 let state = {
   user: null, token: null, view: 'dashboard',
   pendingCallIds: new Set(), pendingShipIds: new Set(), pendingExpIds: new Set(),
-  soundInterval: null, pollInterval: null, tvInterval: null, tvSoundInterval: null, hasPendingCalls: false, hasPendingShips: false, tvPendingCallIds: new Set(),
+  soundInterval: null, pollInterval: null, tvInterval: null, tvSoundInterval: null, hasPendingCalls: false, hasPendingShips: false, tvPendingCallIds: new Set(), tvPendingShipIds: new Set(),
   locations: [],
 };
 
@@ -762,13 +765,8 @@ async function refreshTV() {
 
   const calls = Array.isArray(cr) ? cr : [];
   const ships = Array.isArray(sr) ? sr : [];
-  // Painel TV: mais recentes no topo, depois por prioridade (emergência > urgente > normal)
-  calls.sort((a, b) => {
-    const pOrder = { emergency: 0, urgent: 1, normal: 2 };
-    const pa = pOrder[a.priority] ?? 2, pb = pOrder[b.priority] ?? 2;
-    if (pa !== pb) return pa - pb;
-    return new Date(b.created_at) - new Date(a.created_at);
-  });
+  // Painel TV: mais recente em cima (created_at DESC)
+  calls.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   ships.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   const pending = calls.filter(c => c.status === 'pending');
   const inProg  = calls.filter(c => c.status === 'in_progress');
@@ -778,27 +776,30 @@ async function refreshTV() {
   document.getElementById('tvPendingCount').textContent = `${pending.length} pendente(s)`;
   document.getElementById('tvProgressCount').textContent = `${inProg.length} em andamento`;
 
-  // Som do TV: toca imediatamente a cada novo chamado + interval de 2 min
-  const pendingShips  = ships.filter(s => s.status === 'pending');
-  const newPendingIds = new Set(pending.map(c => c.id));
-  const hasNewCalls   = [...newPendingIds].some(id => !state.tvPendingCallIds.has(id));
+  // Som: toca imediatamente a cada novo chamado OU nova demanda + interval 2 min
+  const pendingShips     = ships.filter(s => s.status === 'pending');
+  const newPendingIds    = new Set(pending.map(c => c.id));
+  const newPendingShipIds= new Set(pendingShips.map(s => s.id));
+  const hasNewCalls = [...newPendingIds].some(id => !state.tvPendingCallIds.has(id));
+  const hasNewShips = [...newPendingShipIds].some(id => !state.tvPendingShipIds.has(id));
 
-  state.hasPendingCalls  = pending.length > 0;
-  state.hasPendingShips  = pendingShips.length > 0;
-  state.tvPendingCallIds = newPendingIds;   // usa set próprio do TV (não sobrescreve poll)
+  state.hasPendingCalls   = pending.length > 0;
+  state.hasPendingShips   = pendingShips.length > 0;
+  state.tvPendingCallIds  = newPendingIds;
+  state.tvPendingShipIds  = newPendingShipIds;
 
   if (hasTVPending()) {
-    if (hasNewCalls) playNotification();    // toca imediatamente a cada novo chamado
-    startTVSoundInterval();                 // garante interval de 2 min rodando
+    if (hasNewCalls || hasNewShips) playNotification(); // novo chamado ou demanda
+    startTVSoundInterval();                             // mantém interval de 2 min
   } else {
     stopTVSound();
   }
 
-  // Modo compacto: ativa quando há mais de 4 chamados ou envios
+  // Modo compacto (coluna única, cards menores): ativa com > 5 itens
   const callsList = document.getElementById('tvCallsList');
   const shipsList = document.getElementById('tvShipsList');
-  callsList.classList.toggle('tv-compact', calls.length > 4);
-  shipsList.classList.toggle('tv-compact', ships.length > 4);
+  callsList.classList.toggle('tv-compact', calls.length > 5);
+  shipsList.classList.toggle('tv-compact', ships.length > 5);
 
   // Render calls
   callsList.innerHTML = calls.length === 0
