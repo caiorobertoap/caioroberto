@@ -2160,16 +2160,14 @@ async function submitLocal() {
   const r = await apiPost('/locations.php', { name, type, address, contact });
   if (!r.ok) { alert(r.data.detail || 'Erro ao salvar local'); return; }
   closeModal();
-  await loadLocations();
-  renderLocais();
+  await renderLocais();
 }
 
 async function deleteLocal(id, name) {
   if (!confirm(`Remover o local "${name}"?`)) return;
   const r = await api(`/locations.php?id=${id}`, { method:'DELETE' });
   if (!r.ok) { alert(r.data.detail || 'Erro ao remover'); return; }
-  await loadLocations();
-  renderLocais();
+  await renderLocais();
 }
 
 // ================================================
