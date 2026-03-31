@@ -20,16 +20,6 @@
   --accent:      #1a3550;
   --accent2:     #0ea5e9;
 }
-html.dark {
-  --bg:          #0f172a;
-  --card:        #1e293b;
-  --topbar:      #1e293b;
-  --text:        #f1f5f9;
-  --text-muted:  #94a3b8;
-  --border:      #334155;
-  --input-bg:    #0f172a;
-  --shadow:      0 1px 6px rgba(0,0,0,.3);
-}
 
 * { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
 body { background: var(--bg); color: var(--text); transition: background .3s, color .3s; }
@@ -60,7 +50,6 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
 .call-card.completed   { border-left-color: #6366f1; opacity: .7; }
 .call-card.emergency   { border-left-color: #ef4444; }
 .call-card.urgent      { border-left-color: #f97316; }
-html.dark .call-card.in_progress { background: rgba(16,185,129,.08); }
 
 /* ── FORM ──────────────────────────────────────────── */
 .form-group { margin-bottom: 14px; }
@@ -168,28 +157,45 @@ html.dark .call-card.in_progress { background: rgba(16,185,129,.08); }
 #tvCallsList::-webkit-scrollbar-track, #tvShipsList::-webkit-scrollbar-track { background: transparent; }
 #tvCallsList::-webkit-scrollbar-thumb, #tvShipsList::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 2px; }
 
-/* TV compact mode: cards menores quando há muitos chamados */
-.tv-compact .tv-card { padding: 10px 13px !important; border-radius: 10px; }
-.tv-compact .tv-card-title { font-size: 14px !important; }
-.tv-compact .tv-card-sub { font-size: 10px !important; }
-.tv-compact .tv-card-driver { padding: 5px 8px !important; }
-.tv-compact .tv-card-driver .tv-driver-name { font-size: 12px !important; }
-.tv-compact .tv-card-desc { font-size: 10px !important; padding: 4px 7px !important; margin-bottom: 5px !important; }
+/* TV panel grid layout for many items */
+#tvCallsList.tv-compact, #tvShipsList.tv-compact {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  align-content: start;
+}
+#tvCallsList.tv-compact .tv-card,
+#tvShipsList.tv-compact .tv-card {
+  padding: 8px 10px !important;
+  border-radius: 8px;
+}
+#tvCallsList.tv-compact .tv-card-title,
+#tvShipsList.tv-compact .tv-card-title {
+  font-size: 13px !important;
+}
+#tvCallsList.tv-compact .tv-card-sub,
+#tvShipsList.tv-compact .tv-card-sub {
+  font-size: 10px !important;
+}
+#tvCallsList.tv-compact .tv-card-driver,
+#tvShipsList.tv-compact .tv-card-driver {
+  padding: 4px 8px !important;
+  margin-top: 4px;
+}
+#tvCallsList.tv-compact .tv-driver-name,
+#tvShipsList.tv-compact .tv-driver-name {
+  font-size: 11px !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
 
 /* ── SOUND INDICATOR ───────────────────────────────── */
 #soundIndicator { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg,#ef4444,#dc2626); color: #fff; padding: 10px 22px; border-radius: 30px; font-size: 13px; font-weight: 700; z-index: 300; display: none; box-shadow: 0 4px 20px rgba(239,68,68,.5); white-space: nowrap; }
 @keyframes snd-pulse { 0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.04)} }
 #soundIndicator { animation: snd-pulse 1s ease-in-out infinite; }
 
-/* ── DARK MODE TOGGLE ──────────────────────────────── */
-.theme-btn { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--card); color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 15px; transition: all .2s; }
-.theme-btn:hover { background: var(--bg); }
-
-/* ── TOPBAR dark text adjust ───────────────────────── */
-html.dark .topbar h2, html.dark .topbar p { color: var(--text); }
-html.dark #clockDisplay { color: var(--text-muted); }
-html.dark .btn-outline { border-color: #475569; color: #94a3b8; }
-html.dark .btn-outline:hover { background: #1e293b; }
 
 /* ── SCROLLBAR ─────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; }
@@ -225,30 +231,30 @@ html.dark .btn-outline:hover { background: #1e293b; }
 <!-- ================================================
      LOGIN PAGE
 ================================================ -->
-<div id="loginPage" class="hidden min-h-screen flex items-center justify-center" style="background:linear-gradient(135deg,#071627 0%,#0f2d4a 50%,#071627 100%);position:relative;overflow:hidden">
+<div id="loginPage" class="hidden min-h-screen flex items-center justify-center" style="background:linear-gradient(135deg,#1a0508 0%,#3d0d14 50%,#1a0508 100%);position:relative;overflow:hidden">
 
   <!-- Background blobs -->
-  <div style="position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(14,165,233,.1) 0%,transparent 65%);top:-200px;left:-200px;pointer-events:none"></div>
-  <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.08) 0%,transparent 65%);bottom:-150px;right:-150px;pointer-events:none"></div>
+  <div style="position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(229,57,53,.1) 0%,transparent 65%);top:-200px;left:-200px;pointer-events:none"></div>
+  <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(183,28,28,.08) 0%,transparent 65%);bottom:-150px;right:-150px;pointer-events:none"></div>
   <div style="position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><circle cx=%2220%22 cy=%2220%22 r=%221%22 fill=%22rgba(255,255,255,.03)%22/></svg>');pointer-events:none"></div>
 
   <!-- Login card -->
-  <div id="loginPanel" style="position:relative;z-index:1;width:100%;max-width:420px;margin:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:44px 40px;backdrop-filter:blur(20px);box-shadow:0 32px 80px rgba(0,0,0,.6)">
+  <div id="loginPanel" style="position:relative;z-index:1;width:100%;max-width:420px;margin:20px;background:rgba(255,255,255,.06);border:1px solid rgba(229,57,53,.2);border-radius:28px;padding:44px 40px;backdrop-filter:blur(20px);box-shadow:0 32px 80px rgba(0,0,0,.6)">
 
     <!-- Logo -->
     <div style="text-align:center;margin-bottom:36px">
       <div style="position:relative;display:inline-block;margin-bottom:18px">
         <!-- Fallback sempre visível, logo sobrepõe se carregar -->
-        <div id="lgIconFallback" style="width:88px;height:88px;border-radius:24px;background:linear-gradient(135deg,#0ea5e9,#1d4ed8);display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 8px 32px rgba(14,165,233,.45)">
-          <i class="fas fa-truck-medical" style="color:#fff;font-size:36px"></i>
+        <div id="lgIconFallback" style="width:88px;height:88px;border-radius:24px;background:linear-gradient(135deg,#e53935,#b71c1c);display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 8px 32px rgba(229,57,53,.45)">
+          <i class="fas fa-flask" style="color:#fff;font-size:36px"></i>
         </div>
         <img src="Logo-Menu.webp" alt="Medclin" id="loginLogo"
-             style="position:absolute;inset:0;width:88px;height:88px;object-fit:contain;border-radius:24px;display:none;filter:drop-shadow(0 0 16px rgba(14,165,233,.5))"
+             style="position:absolute;inset:0;width:88px;height:88px;object-fit:contain;border-radius:24px;display:none;filter:drop-shadow(0 0 16px rgba(229,57,53,.5))"
              onload="this.style.display='block';document.getElementById('lgIconFallback').style.display='none'"
              onerror="this.style.display='none'">
       </div>
       <h1 style="color:#fff;font-size:22px;font-weight:900;letter-spacing:-.4px;margin:0 0 5px">NTO Logística Laboratorial</h1>
-      <p style="color:#38bdf8;font-size:13px;font-weight:600;margin:0;letter-spacing:.3px">Laboratórios Medclin</p>
+      <p style="color:#ef9a9a;font-size:13px;font-weight:600;margin:0;letter-spacing:.3px">Laboratórios Medclin</p>
     </div>
 
     <!-- Error -->
@@ -259,23 +265,23 @@ html.dark .btn-outline:hover { background: #1e293b; }
       <label style="display:block;color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px">E-mail</label>
       <input type="email" id="loginEmail" placeholder="seu@email.com"
              style="width:100%;padding:13px 15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#f1f5f9;font-size:14px;outline:none;transition:border .2s;box-sizing:border-box"
-             onfocus="this.style.borderColor='rgba(14,165,233,.6)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
+             onfocus="this.style.borderColor='rgba(229,57,53,.6)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
     </div>
     <div style="margin-bottom:8px">
       <label style="display:block;color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px">Senha</label>
       <input type="password" id="loginPassword" placeholder="••••••••"
              style="width:100%;padding:13px 15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#f1f5f9;font-size:14px;outline:none;transition:border .2s;box-sizing:border-box"
-             onfocus="this.style.borderColor='rgba(14,165,233,.6)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'"
+             onfocus="this.style.borderColor='rgba(229,57,53,.6)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'"
              onkeydown="if(event.key==='Enter')doLogin()">
     </div>
 
     <div style="text-align:right;margin-bottom:22px">
-      <button onclick="showForgotPanel()" style="background:none;border:none;color:#38bdf8;font-size:12px;font-weight:600;cursor:pointer;padding:4px 0">
+      <button onclick="showForgotPanel()" style="background:none;border:none;color:#ef9a9a;font-size:12px;font-weight:600;cursor:pointer;padding:4px 0">
         Esqueceu a senha?
       </button>
     </div>
 
-    <button onclick="doLogin()" style="width:100%;padding:14px;background:linear-gradient(135deg,#0ea5e9,#1d4ed8);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(14,165,233,.4);transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:8px"
+    <button onclick="doLogin()" style="width:100%;padding:14px;background:linear-gradient(135deg,#e53935,#b71c1c);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(229,57,53,.4);transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:8px"
             onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
       <i class="fas fa-sign-in-alt"></i> Entrar
     </button>
@@ -285,14 +291,14 @@ html.dark .btn-outline:hover { background: #1e293b; }
       <i class="fas fa-tv"></i> Abrir Painel de TV
     </button>
 
-    <p style="text-align:center;color:#334155;font-size:11px;margin-top:28px;margin-bottom:0">Desenvolvido por <span style="color:#475569;font-weight:700">CRSystems</span></p>
+    <p style="text-align:center;color:#4a1515;font-size:11px;margin-top:28px;margin-bottom:0">Desenvolvido por <span style="color:#6b2020;font-weight:700">CRSystems</span></p>
   </div>
 
   <!-- Forgot Password card -->
-  <div id="forgotPanel" style="display:none;position:relative;z-index:1;width:100%;max-width:420px;margin:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:40px;backdrop-filter:blur(20px);box-shadow:0 32px 80px rgba(0,0,0,.6)">
+  <div id="forgotPanel" style="display:none;position:relative;z-index:1;width:100%;max-width:420px;margin:20px;background:rgba(255,255,255,.06);border:1px solid rgba(229,57,53,.2);border-radius:28px;padding:40px;backdrop-filter:blur(20px);box-shadow:0 32px 80px rgba(0,0,0,.6)">
     <div style="text-align:center;margin-bottom:28px">
-      <div style="width:60px;height:60px;border-radius:18px;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
-        <i class="fas fa-key" style="color:#fbbf24;font-size:24px"></i>
+      <div style="width:60px;height:60px;border-radius:18px;background:rgba(229,57,53,.12);border:1px solid rgba(229,57,53,.25);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+        <i class="fas fa-key" style="color:#e53935;font-size:24px"></i>
       </div>
       <h2 style="color:#fff;font-size:20px;font-weight:800;margin:0 0 6px">Recuperar Senha</h2>
       <p style="color:#64748b;font-size:13px;margin:0">Digite seu e-mail e enviaremos um código de recuperação</p>
@@ -306,9 +312,9 @@ html.dark .btn-outline:hover { background: #1e293b; }
         <label style="display:block;color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px">E-mail</label>
         <input type="email" id="forgotEmail" placeholder="seu@email.com"
                style="width:100%;padding:13px 15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#f1f5f9;font-size:14px;outline:none;box-sizing:border-box"
-               onfocus="this.style.borderColor='rgba(14,165,233,.6)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
+               onfocus="this.style.borderColor='rgba(229,57,53,.6)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
       </div>
-      <button onclick="doRequestReset()" style="width:100%;padding:13px;background:linear-gradient(135deg,#0ea5e9,#1d4ed8);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+      <button onclick="doRequestReset()" style="width:100%;padding:13px;background:linear-gradient(135deg,#e53935,#b71c1c);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
         <i class="fas fa-paper-plane"></i> Gerar Código
       </button>
     </div>
@@ -480,9 +486,6 @@ html.dark .btn-outline:hover { background: #1e293b; }
       </div>
       <div class="flex items-center gap-3">
         <span class="text-sm font-mono hidden md:block" style="color:var(--text-muted)" id="clockDisplay"></span>
-        <button class="theme-btn" onclick="toggleDarkMode()" title="Alternar modo escuro/claro" id="themeBtn">
-          <i class="fas fa-moon"></i>
-        </button>
       </div>
     </div>
     <div class="p-6" id="viewContainer">
@@ -544,8 +547,25 @@ function playBeep(freq = 880, dur = 180) {
     osc.start(); osc.stop(ctx.currentTime + dur/1000);
   } catch(e) {}
 }
-function playNotification() { playBeep(880,150); setTimeout(()=>playBeep(1100,200),200); }
-function playDoubleBeep()    { playBeep(660,200); setTimeout(()=>playBeep(660,200),300); }
+function playNotification() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [523.25, 659.25, 783.99]; // C5, E5, G5 - acorde maior ascendente
+    notes.forEach((freq, i) => {
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const t0 = ctx.currentTime + i * 0.13;
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(0.28, t0 + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.55);
+      osc.start(t0); osc.stop(t0 + 0.55);
+    });
+  } catch(e) {}
+}
+function playDoubleBeep() { playNotification(); }
 
 function startPendingCallsSound() {
   playNotification();
@@ -774,11 +794,11 @@ async function refreshTV() {
     stopTVSound();
   }
 
-  // Modo compacto: ativa quando há mais de 3 chamados ou envios
+  // Modo compacto: ativa quando há mais de 4 chamados ou envios
   const callsList = document.getElementById('tvCallsList');
   const shipsList = document.getElementById('tvShipsList');
-  callsList.classList.toggle('tv-compact', calls.length > 3);
-  shipsList.classList.toggle('tv-compact', ships.length > 3);
+  callsList.classList.toggle('tv-compact', calls.length > 4);
+  shipsList.classList.toggle('tv-compact', ships.length > 4);
 
   // Render calls
   callsList.innerHTML = calls.length === 0
@@ -2074,14 +2094,8 @@ const LOC_TYPES = [
   { id:'pickup_point',    label:'Locais de Retirada',     icon:'fa-map-marker-alt', color:'#10b981', bg:'#d1fae5' },
 ];
 
-async function renderLocais() {
-  loading();
-  const r = await apiGet('/locations.php');
-  if (!r.ok) { setView('<p class="text-red-500">Erro ao carregar locais.</p>'); return; }
-  state.locations = r.data; // Mantém em sync
-
+function renderLocaisHTML() {
   const byType = type => state.locations.filter(l => l.type === type);
-
   const section = (t) => {
     const items = byType(t.id);
     return `
@@ -2117,8 +2131,15 @@ async function renderLocais() {
            </div>`}
     </div>`;
   };
-
   setView(`<div>${LOC_TYPES.map(section).join('')}</div>`);
+}
+
+async function renderLocais() {
+  loading();
+  const r = await apiGet('/locations.php');
+  if (!r.ok) { setView('<p class="text-red-500">Erro ao carregar locais.</p>'); return; }
+  state.locations = r.data;
+  renderLocaisHTML();
 }
 
 function openLocaisForm(type, label) {
@@ -2158,15 +2179,17 @@ async function submitLocal() {
   if (!name) { alert('Informe o nome do local.'); return; }
   const r = await apiPost('/locations.php', { name, type, address, contact });
   if (!r.ok) { alert(r.data.detail || 'Erro ao salvar local'); return; }
+  state.locations.push({ id: r.data.id, name, type, address, contact, is_active: 1 });
   closeModal();
-  await renderLocais();
+  renderLocaisHTML();
 }
 
 async function deleteLocal(id, name) {
   if (!confirm(`Remover o local "${name}"?`)) return;
   const r = await api(`/locations.php?id=${id}`, { method:'DELETE' });
   if (!r.ok) { alert(r.data.detail || 'Erro ao remover'); return; }
-  await renderLocais();
+  state.locations = state.locations.filter(l => l.id !== id);
+  renderLocaisHTML();
 }
 
 // ================================================
@@ -2311,26 +2334,9 @@ function badgeClass(s) {
 }
 
 // ================================================
-// DARK MODE
-// ================================================
-function toggleDarkMode() {
-  const isDark = document.documentElement.classList.toggle('dark');
-  localStorage.setItem('nto_theme', isDark ? 'dark' : 'light');
-  const btn = document.getElementById('themeBtn');
-  if (btn) btn.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-}
-
-// ================================================
 // INIT
 // ================================================
 (function init() {
-  // Restore theme preference
-  if (localStorage.getItem('nto_theme') === 'dark') {
-    document.documentElement.classList.add('dark');
-    const btn = document.getElementById('themeBtn');
-    if (btn) btn.innerHTML = '<i class="fas fa-sun"></i>';
-  }
-
   const token = localStorage.getItem('nto_token');
   const user  = localStorage.getItem('nto_user');
   if (token && user) {
