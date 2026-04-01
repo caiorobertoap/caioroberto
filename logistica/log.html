@@ -1159,7 +1159,7 @@ function selectPriority(val) {
 }
 
 async function openChamadoForm() {
-  if (state.locations.length === 0) await loadLocations();
+  await loadLocations();
   const emergencyLocs = state.locations.filter(l=>l.type==='emergency_unit');
   const locOptions = emergencyLocs.length
     ? `<option value="">Selecione o local...</option>` + emergencyLocs.map(l=>`<option value="${escHtml(l.name)}">${escHtml(l.name)}</option>`).join('')
@@ -1295,7 +1295,7 @@ function shipCard(s, canAssume) {
 }
 
 async function openEnvioForm() {
-  if (state.locations.length === 0) await loadLocations();
+  await loadLocations();
   const origOpts = state.locations.filter(l => l.type==='internal_sector')
     .map(l => `<option value="${escHtml(l.name)}">${escHtml(l.name)}</option>`).join('');
   const destOpts = state.locations.filter(l => l.type==='pickup_point')
@@ -2195,9 +2195,8 @@ async function submitLocal() {
   if (!name) { alert('Informe o nome do local.'); return; }
   const r = await apiPost('/locations.php', { name, type, address, contact });
   if (!r.ok) { alert(r.data.detail || 'Erro ao salvar local'); return; }
-  state.locations.push({ id: r.data.id, name, type, address, contact, is_active: 1 });
   closeModal();
-  renderLocaisHTML();
+  await renderLocais();
 }
 
 async function deleteLocal(id, name) {
