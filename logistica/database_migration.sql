@@ -1,4 +1,17 @@
 -- =============================================
+-- NTO LOGISTICS - MIGRAÇÃO: Corrigir ENUM type da tabela locations
+-- Execute este SQL no phpMyAdmin se locais cadastrados ficam sem type
+-- =============================================
+
+-- Garante que o ENUM inclui todos os valores usados pelo sistema
+ALTER TABLE locations
+  MODIFY COLUMN type ENUM('emergency_unit', 'internal_sector', 'pickup_point') NOT NULL;
+
+-- Corrige registros que ficaram com type vazio (inseridos antes da correção)
+-- (apenas remove pois sem type correto não aparecem na plataforma)
+DELETE FROM locations WHERE type = '' OR type IS NULL;
+
+-- =============================================
 -- NTO LOGISTICS - MIGRAÇÃO: Novos campos de Despesas
 -- Execute este SQL no phpMyAdmin ANTES de subir os novos arquivos
 -- =============================================
