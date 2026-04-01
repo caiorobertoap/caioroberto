@@ -130,42 +130,42 @@ body { background: var(--bg); color: var(--text); transition: background .3s, co
 }
 /* ── CARD: normal aguardando — borda VERDE piscando ── */
 .tv-card-pending {
-  border: 2px solid #22c55e;
-  background: linear-gradient(135deg, rgba(34,197,94,.07) 0%, rgba(21,128,61,.02) 100%);
+  border: 1px solid rgba(34,197,94,.6);
+  background: linear-gradient(135deg, rgba(34,197,94,.05) 0%, rgba(21,128,61,.01) 100%);
 }
 @keyframes blink-green {
-  0%,100% { border-color: #22c55e; box-shadow: 0 0 10px rgba(34,197,94,.3), 0 0 24px rgba(34,197,94,.15), 0 4px 20px rgba(0,0,0,.5); }
-  50%      { border-color: rgba(34,197,94,.25); box-shadow: 0 0 4px rgba(34,197,94,.1), 0 4px 20px rgba(0,0,0,.5); }
+  0%,100% { border-color: rgba(34,197,94,.7); box-shadow: 0 0 6px rgba(34,197,94,.15), 0 4px 16px rgba(0,0,0,.4); }
+  50%      { border-color: rgba(34,197,94,.15); box-shadow: 0 4px 16px rgba(0,0,0,.4); }
 }
-.tv-card-pending { animation: blink-green 1.8s ease-in-out infinite; }
+.tv-card-pending { animation: blink-green 2.2s ease-in-out infinite; }
 
 /* ── CARD: urgente — borda AMARELA piscando ── */
 .tv-card-urgent {
-  border: 2px solid #facc15;
-  background: linear-gradient(135deg, rgba(250,204,21,.08) 0%, rgba(161,98,7,.03) 100%);
+  border: 1px solid rgba(250,204,21,.65);
+  background: linear-gradient(135deg, rgba(250,204,21,.06) 0%, rgba(161,98,7,.02) 100%);
 }
 @keyframes blink-yellow {
-  0%,100% { border-color: #facc15; box-shadow: 0 0 12px rgba(250,204,21,.4), 0 0 28px rgba(250,204,21,.2), 0 4px 20px rgba(0,0,0,.5); }
-  50%      { border-color: rgba(250,204,21,.2); box-shadow: 0 0 4px rgba(250,204,21,.1), 0 4px 20px rgba(0,0,0,.5); }
+  0%,100% { border-color: rgba(250,204,21,.75); box-shadow: 0 0 8px rgba(250,204,21,.2), 0 4px 16px rgba(0,0,0,.4); }
+  50%      { border-color: rgba(250,204,21,.15); box-shadow: 0 4px 16px rgba(0,0,0,.4); }
 }
-.tv-card-urgent { animation: blink-yellow 1.4s ease-in-out infinite; }
+.tv-card-urgent { animation: blink-yellow 1.6s ease-in-out infinite; }
 
 /* ── CARD: emergência — borda VERMELHA piscando rápido ── */
 .tv-card-emergency {
-  border: 2px solid #ef4444;
-  background: linear-gradient(135deg, rgba(239,68,68,.1) 0%, rgba(185,28,28,.04) 100%);
+  border: 1px solid rgba(239,68,68,.7);
+  background: linear-gradient(135deg, rgba(239,68,68,.07) 0%, rgba(185,28,28,.02) 100%);
 }
 @keyframes blink-red {
-  0%,100% { border-color: #ef4444; box-shadow: 0 0 16px rgba(239,68,68,.55), 0 0 36px rgba(239,68,68,.25), 0 4px 20px rgba(0,0,0,.5); }
-  50%      { border-color: rgba(239,68,68,.2); box-shadow: 0 0 4px rgba(239,68,68,.1), 0 4px 20px rgba(0,0,0,.5); }
+  0%,100% { border-color: rgba(239,68,68,.85); box-shadow: 0 0 10px rgba(239,68,68,.25), 0 4px 16px rgba(0,0,0,.4); }
+  50%      { border-color: rgba(239,68,68,.15); box-shadow: 0 4px 16px rgba(0,0,0,.4); }
 }
-.tv-card-emergency { animation: blink-red 0.9s ease-in-out infinite; }
+.tv-card-emergency { animation: blink-red 1s ease-in-out infinite; }
 
 /* ── CARD: motorista assumiu — borda TEAL fixa, sem piscar ── */
 .tv-card-progress {
-  border: 2px solid #0faeaa;
-  background: linear-gradient(135deg, rgba(15,174,170,.1) 0%, rgba(0,122,130,.04) 100%);
-  box-shadow: 0 0 14px rgba(15,174,170,.15), 0 4px 16px rgba(0,0,0,.4);
+  border: 1px solid rgba(15,174,170,.5);
+  background: linear-gradient(135deg, rgba(15,174,170,.08) 0%, rgba(0,122,130,.03) 100%);
+  box-shadow: 0 0 8px rgba(15,174,170,.1), 0 4px 16px rgba(0,0,0,.4);
   animation: none !important;
 }
 
@@ -849,8 +849,8 @@ async function refreshTV() {
                 <span class="${prog?'':'tv-blink'}" style="width:7px;height:7px;border-radius:50%;background:${dotColor};display:inline-block;flex-shrink:0"></span>
                 <span style="color:${statusColor};font-size:11px;font-weight:700;white-space:nowrap">${statusLabel}</span>
               </div>
-              <div style="color:#64748b;font-size:11px;font-weight:400;display:flex;align-items:center;gap:4px;margin-top:2px">
-                <i class="fas fa-clock" style="font-size:10px;color:#0faeaa;opacity:.6"></i>${fmtDate(c.created_at)}
+              <div style="color:#94a3b8;font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px;margin-top:2px">
+                <i class="fas fa-clock" style="font-size:11px;color:#0faeaa"></i>${fmtDate(c.created_at)}
               </div>
             </div>
           </div>
