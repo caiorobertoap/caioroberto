@@ -1,0 +1,2364 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NTO Logística - Laboratórios Medclin</title>
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+/* ── VARIÁVEIS DE TEMA ─────────────────────────────── */
+:root {
+  --bg:          #f1f5f9;
+  --card:        #ffffff;
+  --topbar:      #ffffff;
+  --text:        #1e293b;
+  --text-muted:  #64748b;
+  --border:      #e2e8f0;
+  --input-bg:    #ffffff;
+  --shadow:      0 1px 4px rgba(0,0,0,.08);
+  --accent:      #1a3550;
+  --accent2:     #0ea5e9;
+}
+
+* { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+body { background: var(--bg); color: var(--text); transition: background .3s, color .3s; }
+
+/* ── SIDEBAR ───────────────────────────────────────── */
+.sidebar { background: linear-gradient(180deg, #1a3550 0%, #071627 100%); min-height: 100vh; width: 240px; flex-shrink: 0; }
+.sidebar-link { display: flex; align-items: center; gap: 10px; padding: 10px 16px; color: rgba(255,255,255,.6); border-radius: 8px; margin: 2px 8px; cursor: pointer; transition: all .2s; font-size: 14px; }
+.sidebar-link:hover, .sidebar-link.active { color: #fff; background: rgba(255,255,255,.13); }
+.sidebar-link i { width: 18px; text-align: center; }
+
+/* ── CARDS ─────────────────────────────────────────── */
+.card { background: var(--card); border-radius: 14px; box-shadow: var(--shadow); }
+.stat-card { background: var(--card); border-radius: 14px; padding: 20px; display: flex; align-items: center; gap: 16px; box-shadow: var(--shadow); }
+.stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+
+/* ── BADGES ────────────────────────────────────────── */
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.badge-pending   { background: #fef3c7; color: #92400e; }
+.badge-progress  { background: #d1fae5; color: #065f46; }
+.badge-completed { background: #e0e7ff; color: #3730a3; }
+.badge-approved  { background: #d1fae5; color: #065f46; }
+.badge-rejected  { background: #fee2e2; color: #991b1b; }
+.badge-released  { background: #dbeafe; color: #1e40af; }
+
+/* ── CALL CARDS ────────────────────────────────────── */
+.call-card { border-left: 4px solid #fbbf24; transition: all .2s; }
+.call-card.in_progress { border-left-color: #10b981; background: #f0fdf4; }
+.call-card.completed   { border-left-color: #6366f1; opacity: .7; }
+.call-card.emergency   { border-left-color: #ef4444; }
+.call-card.urgent      { border-left-color: #f97316; }
+
+/* ── FORM ──────────────────────────────────────────── */
+.form-group { margin-bottom: 14px; }
+.form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.form-input { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; transition: border .2s; background: var(--input-bg); color: var(--text); }
+.form-input:focus { border-color: #1a3550; box-shadow: 0 0 0 2px rgba(26,53,80,.15); }
+
+/* ── BUTTONS ───────────────────────────────────────── */
+.btn { padding: 8px 18px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all .2s; display: inline-flex; align-items: center; gap: 6px; }
+.btn-primary  { background: #1a3550; color: #fff; }
+.btn-primary:hover  { background: #0b1a2a; }
+.btn-success  { background: #10b981; color: #fff; }
+.btn-success:hover  { background: #059669; }
+.btn-danger   { background: #ef4444; color: #fff; }
+.btn-danger:hover   { background: #dc2626; }
+.btn-warning  { background: #f59e0b; color: #fff; }
+.btn-warning:hover  { background: #d97706; }
+.btn-outline  { background: transparent; border: 1.5px solid #1a3550; color: #1a3550; }
+.btn-outline:hover  { background: #f0f4f8; }
+.btn-tv       { background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff; }
+.btn-tv:hover { opacity: .9; }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+
+/* ── TOPBAR ────────────────────────────────────────── */
+.topbar { background: var(--topbar); border-bottom: 1px solid var(--border); transition: background .3s; }
+
+/* ── MODAL ─────────────────────────────────────────── */
+.modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.modal { background: var(--card); color: var(--text); border-radius: 16px; width: 100%; max-width: 580px; max-height: 92vh; overflow-y: auto; }
+.modal-lg { max-width: 740px; }
+
+/* ── AVISOS ────────────────────────────────────────── */
+.avisos-box { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; padding: 16px; margin-top: 16px; }
+.avisos-box h4 { font-weight: 700; color: #92400e; margin-bottom: 8px; font-size: 13px; }
+.avisos-box li { font-size: 12px; color: #78350f; margin-bottom: 4px; line-height: 1.5; }
+
+/* ── TV PANEL ──────────────────────────────────────── */
+#tvPanel { display: none; position: fixed; inset: 0; z-index: 200; overflow: hidden; flex-direction: column; background: #021212; }
+
+/* TV animated background */
+#tvPanel::before {
+  content:''; position:absolute; inset:0; pointer-events:none; z-index:0;
+  background: radial-gradient(ellipse 80% 50% at 20% 0%, rgba(15,174,170,.09) 0%, transparent 60%),
+              radial-gradient(ellipse 60% 40% at 80% 100%, rgba(0,122,130,.07) 0%, transparent 60%);
+}
+
+/* TV header */
+.tv-header {
+  background: linear-gradient(90deg, #021a1a 0%, #03302f 40%, #021f1f 70%, #021a1a 100%);
+  border-bottom: 1px solid rgba(15,174,170,.25);
+  padding: 14px 28px;
+  position: relative; z-index: 1;
+  box-shadow: 0 2px 24px rgba(0,0,0,.5);
+}
+
+/* TV column headers */
+.tv-col-header {
+  padding: 14px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  background: rgba(255,255,255,.015);
+  position: relative; z-index: 1;
+}
+
+/* TV call cards */
+.tv-card {
+  border-radius: 14px; padding: 12px 15px;
+  border: 1px solid rgba(255,255,255,.07);
+  background: rgba(255,255,255,.025);
+  transition: all .4s;
+  position: relative; overflow: hidden;
+  flex-shrink: 0; /* nunca comprimir, sempre rolar */
+  min-width: 0;   /* permite truncar texto em flexbox */
+}
+.tv-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+}
+/* ── CARD: normal aguardando — borda VERDE piscando ── */
+.tv-card-pending {
+  border: 1px solid rgba(34,197,94,.6);
+  background: linear-gradient(135deg, rgba(34,197,94,.05) 0%, rgba(21,128,61,.01) 100%);
+}
+@keyframes blink-green {
+  0%,100% { border-color: rgba(34,197,94,.7); box-shadow: 0 0 6px rgba(34,197,94,.15), 0 4px 16px rgba(0,0,0,.4); }
+  50%      { border-color: rgba(34,197,94,.15); box-shadow: 0 4px 16px rgba(0,0,0,.4); }
+}
+.tv-card-pending { animation: blink-green 2.2s ease-in-out infinite; }
+
+/* ── CARD: urgente — borda AMARELA piscando ── */
+.tv-card-urgent {
+  border: 1px solid rgba(250,204,21,.65);
+  background: linear-gradient(135deg, rgba(250,204,21,.06) 0%, rgba(161,98,7,.02) 100%);
+}
+@keyframes blink-yellow {
+  0%,100% { border-color: rgba(250,204,21,.75); box-shadow: 0 0 8px rgba(250,204,21,.2), 0 4px 16px rgba(0,0,0,.4); }
+  50%      { border-color: rgba(250,204,21,.15); box-shadow: 0 4px 16px rgba(0,0,0,.4); }
+}
+.tv-card-urgent { animation: blink-yellow 1.6s ease-in-out infinite; }
+
+/* ── CARD: emergência — borda VERMELHA piscando rápido ── */
+.tv-card-emergency {
+  border: 1px solid rgba(239,68,68,.7);
+  background: linear-gradient(135deg, rgba(239,68,68,.07) 0%, rgba(185,28,28,.02) 100%);
+}
+@keyframes blink-red {
+  0%,100% { border-color: rgba(239,68,68,.85); box-shadow: 0 0 10px rgba(239,68,68,.25), 0 4px 16px rgba(0,0,0,.4); }
+  50%      { border-color: rgba(239,68,68,.15); box-shadow: 0 4px 16px rgba(0,0,0,.4); }
+}
+.tv-card-emergency { animation: blink-red 1s ease-in-out infinite; }
+
+/* ── CARD: motorista assumiu — borda TEAL fixa, sem piscar ── */
+.tv-card-progress {
+  border: 1px solid rgba(15,174,170,.5);
+  background: linear-gradient(135deg, rgba(15,174,170,.08) 0%, rgba(0,122,130,.03) 100%);
+  box-shadow: 0 0 8px rgba(15,174,170,.1), 0 4px 16px rgba(0,0,0,.4);
+  animation: none !important;
+}
+
+@keyframes tv-blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.tv-blink { animation: tv-blink 1.4s ease-in-out infinite; }
+
+/* TV badge */
+.tv-badge { padding: 4px 12px; border-radius: 20px; font-size: clamp(10px, 1vw, 13px); font-weight: 700; letter-spacing:.3px; }
+.tv-badge-pending  { background: rgba(15,174,170,.15); color: #0faeaa; border: 1px solid rgba(15,174,170,.4); }
+.tv-badge-progress { background: rgba(0,122,130,.2);   color: #4dd9d5; border: 1px solid rgba(0,122,130,.45); }
+.tv-badge-emergency{ background: rgba(239,68,68,.2);   color: #f87171; border: 1px solid rgba(239,68,68,.4); }
+
+/* TV scrollbar */
+#tvCallsList::-webkit-scrollbar, #tvShipsList::-webkit-scrollbar { width: 3px; }
+#tvCallsList::-webkit-scrollbar-track, #tvShipsList::-webkit-scrollbar-track { background: transparent; }
+#tvCallsList::-webkit-scrollbar-thumb, #tvShipsList::-webkit-scrollbar-thumb { background: rgba(15,174,170,.2); border-radius: 2px; }
+
+/* TV cards: sempre coluna vertical, sem grid */
+#tvCallsList, #tvShipsList {
+  display: flex !important;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0; /* essencial para overflow-y funcionar dentro de flex */
+}
+
+/* Cada card tem altura mínima fixa — nunca comprime */
+.tv-card {
+  min-height: 100px;
+  flex-shrink: 0 !important;
+}
+
+/* Texto dos cards: responsivo via clamp (funciona em TV e telas menores) */
+.tv-card-title  { font-size: clamp(11px, 1.4vw, 16px) !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tv-card-sub    { font-size: clamp(9px,  0.8vw, 11px) !important; }
+.tv-card-desc   { font-size: clamp(9px,  0.8vw, 11px) !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tv-driver-name { font-size: clamp(10px, 1.1vw, 13px) !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+
+/* Modo compacto removido — cards sempre com tamanho fixo e scroll */
+
+/* ── SOUND INDICATOR ───────────────────────────────── */
+#soundIndicator { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: linear-gradient(135deg,#ef4444,#dc2626); color: #fff; padding: 10px 22px; border-radius: 30px; font-size: 13px; font-weight: 700; z-index: 300; display: none; box-shadow: 0 4px 20px rgba(239,68,68,.5); white-space: nowrap; }
+@keyframes snd-pulse { 0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.04)} }
+#soundIndicator { animation: snd-pulse 1s ease-in-out infinite; }
+
+
+/* ── SCROLLBAR ─────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+
+.hidden { display: none !important; }
+
+/* ── MOBILE ────────────────────────────────────────── */
+@media (max-width: 768px) {
+  #mainApp { position: relative; }
+  .sidebar { position: fixed; left: -240px; top: 0; height: 100%; z-index: 100; transition: left .3s; }
+  .sidebar.open { left: 0; }
+  .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 99; }
+  .sidebar-overlay.show { display: block; }
+  #contentArea { margin-left: 0 !important; }
+}
+
+/* ── DRIVER CARD ───────────────────────────────────── */
+.driver-call-card { border-radius: 16px; padding: 20px; margin-bottom: 12px; border: 2px solid #fbbf24; background: var(--card); box-shadow: var(--shadow); }
+.driver-call-card.in_progress { border-color: #10b981; background: var(--card); }
+.driver-call-card.completed { border-color: #c7d2fe; opacity: .8; }
+.driver-btn { width: 100%; padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 700; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
+.driver-btn-assume   { background: #10b981; color: #fff; }
+.driver-btn-complete { background: #1a3550; color: #fff; }
+.driver-btn-assume:active, .driver-btn-complete:active { opacity: .85; transform: scale(.98); }
+</style>
+</head>
+<body>
+
+<div id="soundIndicator"><i class="fas fa-bell mr-2"></i>Chamados Pendentes</div>
+
+<!-- ================================================
+     LOGIN PAGE
+================================================ -->
+<div id="loginPage" class="hidden min-h-screen flex items-center justify-center" style="background:linear-gradient(135deg,#011414 0%,#032e2d 50%,#011414 100%);position:relative;overflow:hidden">
+
+  <!-- Background blobs -->
+  <div style="position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(15,174,170,.12) 0%,transparent 65%);top:-200px;left:-200px;pointer-events:none"></div>
+  <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(0,122,130,.09) 0%,transparent 65%);bottom:-150px;right:-150px;pointer-events:none"></div>
+  <div style="position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22><circle cx=%2220%22 cy=%2220%22 r=%221%22 fill=%22rgba(255,255,255,.03)%22/></svg>');pointer-events:none"></div>
+
+  <!-- Login card -->
+  <div id="loginPanel" style="position:relative;z-index:1;width:100%;max-width:420px;margin:20px;background:rgba(255,255,255,.05);border:1px solid rgba(15,174,170,.2);border-radius:28px;padding:44px 40px;backdrop-filter:blur(20px);box-shadow:0 32px 80px rgba(0,0,0,.6)">
+
+    <!-- Logo -->
+    <div style="text-align:center;margin-bottom:36px">
+      <div style="position:relative;display:inline-block;margin-bottom:18px">
+        <!-- Fallback sempre visível, logo sobrepõe se carregar -->
+        <div id="lgIconFallback" style="width:88px;height:88px;border-radius:24px;background:linear-gradient(135deg,#0faeaa,#007a82);display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 8px 32px rgba(15,174,170,.45)">
+          <i class="fas fa-flask" style="color:#fff;font-size:36px"></i>
+        </div>
+        <img src="Logo-Menu.webp" alt="Medclin" id="loginLogo"
+             style="position:absolute;inset:0;width:88px;height:88px;object-fit:contain;border-radius:24px;display:none;filter:drop-shadow(0 0 16px rgba(15,174,170,.5))"
+             onload="this.style.display='block';document.getElementById('lgIconFallback').style.display='none'"
+             onerror="this.style.display='none'">
+      </div>
+      <h1 style="color:#fff;font-size:22px;font-weight:900;letter-spacing:-.4px;margin:0 0 5px">NTO Logística Laboratorial</h1>
+      <p style="color:#4dd9d5;font-size:13px;font-weight:600;margin:0;letter-spacing:.3px">Laboratórios Medclin</p>
+    </div>
+
+    <!-- Error -->
+    <div id="loginError" class="hidden" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:#fca5a5;border-radius:12px;padding:11px 14px;font-size:13px;font-weight:500;margin-bottom:16px"></div>
+
+    <!-- Form -->
+    <div style="margin-bottom:14px">
+      <label style="display:block;color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px">E-mail</label>
+      <input type="email" id="loginEmail" placeholder="seu@email.com"
+             style="width:100%;padding:13px 15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#f1f5f9;font-size:14px;outline:none;transition:border .2s;box-sizing:border-box"
+             onfocus="this.style.borderColor='rgba(15,174,170,.7)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
+    </div>
+    <div style="margin-bottom:8px">
+      <label style="display:block;color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px">Senha</label>
+      <input type="password" id="loginPassword" placeholder="••••••••"
+             style="width:100%;padding:13px 15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#f1f5f9;font-size:14px;outline:none;transition:border .2s;box-sizing:border-box"
+             onfocus="this.style.borderColor='rgba(15,174,170,.7)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'"
+             onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+
+    <div style="text-align:right;margin-bottom:22px">
+      <button onclick="showForgotPanel()" style="background:none;border:none;color:#4dd9d5;font-size:12px;font-weight:600;cursor:pointer;padding:4px 0">
+        Esqueceu a senha?
+      </button>
+    </div>
+
+    <button onclick="doLogin()" style="width:100%;padding:14px;background:linear-gradient(135deg,#0faeaa,#007a82);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(15,174,170,.4);transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:8px"
+            onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
+      <i class="fas fa-sign-in-alt"></i> Entrar
+    </button>
+
+    <button onclick="openTV()" style="width:100%;margin-top:12px;padding:12px;background:rgba(15,174,170,.1);color:#0faeaa;border:1px solid rgba(15,174,170,.3);border-radius:14px;font-size:13px;font-weight:600;cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px"
+            onmouseover="this.style.background='rgba(15,174,170,.2)'" onmouseout="this.style.background='rgba(15,174,170,.1)'">
+      <i class="fas fa-tv"></i> Abrir Painel de TV
+    </button>
+
+    <p style="text-align:center;color:#1d5a5c;font-size:11px;margin-top:28px;margin-bottom:0">Desenvolvido por <span style="color:#0faeaa;font-weight:700">CRSystems</span></p>
+  </div>
+
+  <!-- Forgot Password card -->
+  <div id="forgotPanel" style="display:none;position:relative;z-index:1;width:100%;max-width:420px;margin:20px;background:rgba(255,255,255,.05);border:1px solid rgba(15,174,170,.2);border-radius:28px;padding:40px;backdrop-filter:blur(20px);box-shadow:0 32px 80px rgba(0,0,0,.6)">
+    <div style="text-align:center;margin-bottom:28px">
+      <div style="width:60px;height:60px;border-radius:18px;background:rgba(15,174,170,.12);border:1px solid rgba(15,174,170,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+        <i class="fas fa-key" style="color:#0faeaa;font-size:24px"></i>
+      </div>
+      <h2 style="color:#fff;font-size:20px;font-weight:800;margin:0 0 6px">Recuperar Senha</h2>
+      <p style="color:#64748b;font-size:13px;margin:0">Digite seu e-mail e enviaremos um código de recuperação</p>
+    </div>
+
+    <div id="forgotMsg" style="display:none;border-radius:12px;padding:11px 14px;font-size:13px;font-weight:500;margin-bottom:16px"></div>
+
+    <!-- Step 1: solicitar código -->
+    <div id="forgotStep1">
+      <div style="margin-bottom:14px">
+        <label style="display:block;color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px">E-mail</label>
+        <input type="email" id="forgotEmail" placeholder="seu@email.com"
+               style="width:100%;padding:13px 15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#f1f5f9;font-size:14px;outline:none;box-sizing:border-box"
+               onfocus="this.style.borderColor='rgba(14,165,233,.6)'" onblur="this.style.borderColor='rgba(255,255,255,.12)'">
+      </div>
+      <button onclick="doRequestReset()" style="width:100%;padding:13px;background:linear-gradient(135deg,#0ea5e9,#1d4ed8);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+        <i class="fas fa-paper-plane"></i> Gerar Código
+      </button>
+    </div>
+
+    <!-- Step 2: usar código -->
+    <div id="forgotStep2" style="display:none">
+      <p style="color:#94a3b8;font-size:13px;margin-bottom:16px">Informe o código de 6 dígitos enviado para seu e-mail e defina sua nova senha.</p>
+      <div style="margin-bottom:14px">
+        <label style="display:block;color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px">Código de Recuperação</label>
+        <input type="text" id="resetCode" placeholder="000000" maxlength="6"
+               style="width:100%;padding:13px 15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#fcd34d;font-size:24px;font-weight:900;letter-spacing:8px;outline:none;text-align:center;box-sizing:border-box">
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="display:block;color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px">Nova Senha</label>
+        <input type="password" id="newPassword" placeholder="Mínimo 6 caracteres"
+               style="width:100%;padding:13px 15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#f1f5f9;font-size:14px;outline:none;box-sizing:border-box">
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="display:block;color:#94a3b8;font-size:12px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;margin-bottom:7px">Confirmar Senha</label>
+        <input type="password" id="newPasswordConfirm" placeholder="Repita a senha"
+               style="width:100%;padding:13px 15px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:#f1f5f9;font-size:14px;outline:none;box-sizing:border-box">
+      </div>
+      <button onclick="doResetPassword()" style="width:100%;padding:13px;background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px">
+        <i class="fas fa-lock"></i> Redefinir Senha
+      </button>
+    </div>
+
+    <button onclick="showLoginPanel()" style="display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:18px;padding:10px;background:none;border:none;color:#64748b;font-size:13px;font-weight:600;cursor:pointer">
+      <i class="fas fa-arrow-left" style="font-size:11px"></i> Voltar ao login
+    </button>
+  </div>
+</div>
+
+<!-- ================================================
+     PAINEL DE TV
+================================================ -->
+<div id="tvPanel">
+
+  <!-- TV Header -->
+  <div class="tv-header flex items-center justify-between">
+    <div class="flex items-center gap-4">
+      <!-- Logo com fallback -->
+      <img src="Logo-Menu.webp" alt="Medclin" style="height:44px;object-fit:contain;filter:drop-shadow(0 0 8px rgba(15,174,170,.4))"
+           onerror="this.style.display='none';document.getElementById('tvLogoFallback').style.display='flex'">
+      <div id="tvLogoFallback" style="display:none;width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#0faeaa,#007a82);align-items:center;justify-content:center">
+        <i class="fas fa-truck-medical" style="color:#fff;font-size:20px"></i>
+      </div>
+      <div style="border-left:1px solid rgba(255,255,255,.08);padding-left:16px">
+        <div style="color:#fff;font-weight:900;font-size:17px;letter-spacing:-.3px;line-height:1.2">NTO Logística Laboratorial</div>
+        <div style="color:#0faeaa;font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-top:2px">Laboratórios Medclin · Painel Operacional</div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <!-- Stats pills -->
+      <div class="flex items-center gap-2 px-4 py-2 rounded-full" style="background:rgba(15,174,170,.1);border:1px solid rgba(15,174,170,.3)">
+        <span class="tv-blink inline-block" style="width:8px;height:8px;border-radius:50%;background:#0faeaa"></span>
+        <span style="color:#0faeaa;font-size:13px;font-weight:700" id="tvPendingCount">0 pendente(s)</span>
+      </div>
+      <div class="flex items-center gap-2 px-4 py-2 rounded-full" style="background:rgba(0,122,130,.15);border:1px solid rgba(0,122,130,.35)">
+        <span class="inline-block" style="width:8px;height:8px;border-radius:50%;background:#007a82"></span>
+        <span style="color:#4dd9d5;font-size:13px;font-weight:700" id="tvProgressCount">0 em andamento</span>
+      </div>
+
+      <!-- Divider -->
+      <div style="width:1px;height:32px;background:rgba(255,255,255,.08)"></div>
+
+      <!-- Clock -->
+      <div class="text-right">
+        <div style="color:#fff;font-size:26px;font-weight:900;font-family:monospace;letter-spacing:1px;line-height:1" id="tvClock"></div>
+        <div style="color:#475569;font-size:11px;margin-top:3px" id="tvDate"></div>
+      </div>
+
+      <button onclick="closeTV()" style="width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#94a3b8;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s"
+              onmouseover="this.style.background='rgba(255,255,255,.12)';this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,.05)';this.style.color='#94a3b8'">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- TV Body -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;height:calc(100vh - 73px);overflow:hidden;position:relative;z-index:1">
+
+    <!-- Coluna: Chamados -->
+    <div style="display:flex;flex-direction:column;overflow:hidden;border-right:1px solid rgba(255,255,255,.04)">
+      <div class="tv-col-header">
+        <div class="flex items-center gap-3">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(15,174,170,.12);border:1px solid rgba(15,174,170,.25);display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-vial" style="color:#0faeaa;font-size:15px"></i>
+          </div>
+          <div>
+            <div style="color:#fff;font-weight:700;font-size:15px">Retirada de Amostras</div>
+            <div style="color:#64748b;font-size:11px">Chamados em aberto</div>
+          </div>
+        </div>
+        <span id="tvCallsCount" class="tv-badge tv-badge-pending"></span>
+      </div>
+      <div id="tvCallsList" class="flex-1 overflow-y-auto" style="padding:16px;gap:8px;display:flex;flex-direction:column;min-height:0"></div>
+    </div>
+
+    <!-- Coluna: Envios -->
+    <div style="display:flex;flex-direction:column;overflow:hidden">
+      <div class="tv-col-header">
+        <div class="flex items-center gap-3">
+          <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,122,130,.15);border:1px solid rgba(0,122,130,.3);display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-box" style="color:#4dd9d5;font-size:15px"></i>
+          </div>
+          <div>
+            <div style="color:#fff;font-weight:700;font-size:15px">Envios / Retiradas</div>
+            <div style="color:#64748b;font-size:11px">Demandas em aberto</div>
+          </div>
+        </div>
+        <span id="tvShipsCount" class="tv-badge tv-badge-progress"></span>
+      </div>
+      <div id="tvShipsList" class="flex-1 overflow-y-auto" style="padding:16px;gap:8px;display:flex;flex-direction:column;min-height:0"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ================================================
+     MAIN APP
+================================================ -->
+<div id="mainApp" class="hidden flex h-screen overflow-hidden">
+
+  <!-- Sidebar -->
+  <div class="sidebar flex flex-col">
+    <div class="p-3 border-b border-blue-900">
+      <img src="Logo-Menu.webp" alt="Medclin" class="h-14 w-full object-contain" onerror="this.style.display='none';document.getElementById('sidebarLogoFallback').style.display='flex'">
+      <div id="sidebarLogoFallback" style="display:none" class="flex items-center gap-2 px-1">
+        <div class="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
+          <i class="fas fa-truck-medical text-white"></i>
+        </div>
+        <div>
+          <div class="text-white font-bold text-sm">NTO Logística</div>
+          <div class="text-blue-300 text-xs">Medclin</div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="flex-1 py-3 overflow-y-auto" id="sidebarNav"></nav>
+
+    <div class="p-3 border-t border-blue-900">
+      <div class="flex items-center gap-2 mb-2 px-2">
+        <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0" id="userAvatar"></div>
+        <div class="flex-1 min-w-0">
+          <div class="text-white text-sm font-semibold truncate" id="userName"></div>
+          <div class="text-blue-300 text-xs truncate" id="userRole"></div>
+        </div>
+      </div>
+      <button class="sidebar-link w-full" onclick="openTV()">
+        <i class="fas fa-tv"></i> Painel de TV
+      </button>
+      <button class="sidebar-link w-full" onclick="doLogout()">
+        <i class="fas fa-sign-out-alt"></i> Sair
+      </button>
+      <p class="text-blue-600 text-center text-xs mt-2">CRSystems</p>
+    </div>
+  </div>
+
+  <!-- Content Area -->
+  <div class="flex-1 overflow-y-auto" id="contentArea">
+    <div class="topbar px-4 py-3 flex items-center justify-between sticky top-0 z-10" style="box-shadow:0 1px 0 var(--border)">
+      <div class="flex items-center gap-3">
+        <button class="md:hidden p-1 rounded-lg" style="color:var(--text-muted)" onclick="openSidebar()"><i class="fas fa-bars text-xl"></i></button>
+        <div>
+          <h2 class="font-bold text-sm md:text-base" style="color:var(--text)" id="pageTitle">Dashboard</h2>
+          <p class="text-xs hidden md:block" style="color:var(--text-muted)" id="pageSubtitle"></p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-sm font-mono hidden md:block" style="color:var(--text-muted)" id="clockDisplay"></span>
+      </div>
+    </div>
+    <div class="p-6" id="viewContainer">
+      <div class="flex items-center justify-center h-64 text-gray-400">
+        <div class="text-center"><i class="fas fa-spinner fa-spin text-3xl mb-3"></i><p>Carregando...</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="sidebarOverlay" class="sidebar-overlay" onclick="closeSidebar()"></div>
+<div id="modalContainer"></div>
+
+<script>
+// ================================================
+// ESTADO
+// ================================================
+const API = '/api';
+let state = {
+  user: null, token: null, view: 'dashboard',
+  pendingCallIds: new Set(), pendingShipIds: new Set(), pendingExpIds: new Set(),
+  soundInterval: null, pollInterval: null, tvInterval: null, tvSoundInterval: null, hasPendingCalls: false, hasPendingShips: false, tvPendingCallIds: new Set(), tvPendingShipIds: new Set(),
+  locations: [],
+};
+
+const ROLE_LABELS = { admin:'Administrador', driver:'Motorista', emergency:'Unidade de Emergência', sector:'Setor Interno', financial:'Financeiro' };
+const STATUS_LABELS = { pending:'Pendente', in_progress:'Em Andamento', completed:'Concluído', cancelled:'Cancelado', approved:'Aprovado', rejected:'Rejeitado', released:'Liberado' };
+const PRIORITY_LABELS = { normal:'Normal', urgent:'Urgente', emergency:'Emergência' };
+
+// ================================================
+// CLOCK
+// ================================================
+function updateClock() {
+  const now = new Date();
+  const t = now.toLocaleTimeString('pt-BR');
+  const d = now.toLocaleDateString('pt-BR', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+  const el = document.getElementById('clockDisplay');
+  if (el) el.textContent = t;
+  const tc = document.getElementById('tvClock');
+  if (tc) tc.textContent = t;
+  const td = document.getElementById('tvDate');
+  if (td) td.textContent = d.charAt(0).toUpperCase() + d.slice(1);
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ================================================
+// SOUND
+// ================================================
+function playBeep(freq = 880, dur = 180) {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = freq; osc.type = 'sine';
+    gain.gain.setValueAtTime(0.25, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur/1000);
+    osc.start(); osc.stop(ctx.currentTime + dur/1000);
+  } catch(e) {}
+}
+function playNotification() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [523.25, 659.25, 783.99]; // C5, E5, G5 - acorde maior ascendente
+    notes.forEach((freq, i) => {
+      const osc  = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const t0 = ctx.currentTime + i * 0.13;
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(0.28, t0 + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.55);
+      osc.start(t0); osc.stop(t0 + 0.55);
+    });
+  } catch(e) {}
+}
+function playDoubleBeep() { playNotification(); }
+
+function startPendingCallsSound() {
+  playNotification();
+  document.getElementById('soundIndicator').style.display = 'block';
+  if (!state.soundInterval) {
+    state.soundInterval = setInterval(() => {
+      if (state.hasPendingCalls) playNotification(); else stopPendingCallsSound();
+    }, 2 * 60 * 1000);
+  }
+}
+function stopPendingCallsSound() {
+  clearInterval(state.soundInterval); state.soundInterval = null;
+  document.getElementById('soundIndicator').style.display = 'none';
+}
+
+// Som do painel de TV: toca imediatamente em novos chamados e a cada 2 minutos
+function hasTVPending() { return state.hasPendingCalls || state.hasPendingShips; }
+function startTVSoundInterval() {
+  // Apenas garante que o interval de 2 min está rodando — não toca som aqui
+  if (state.tvSoundInterval) return;
+  state.tvSoundInterval = setInterval(() => {
+    if (hasTVPending()) playNotification(); else stopTVSound();
+  }, 2 * 60 * 1000);
+}
+function stopTVSound() {
+  clearInterval(state.tvSoundInterval);
+  state.tvSoundInterval = null;
+}
+
+// ================================================
+// API
+// ================================================
+async function api(path, opts = {}) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (state.token) headers['Authorization'] = 'Bearer ' + state.token;
+  const res  = await fetch(API + path, { ...opts, headers: { ...headers, ...(opts.headers||{}) } });
+  const text = await res.text();
+  try { return { ok: res.ok, status: res.status, data: JSON.parse(text) }; }
+  catch { return { ok: res.ok, status: res.status, data: { detail: text } }; }
+}
+const apiGet  = p      => api(p);
+const apiPost = (p,b)  => api(p, { method:'POST', body: JSON.stringify(b) });
+const apiPut  = (p,b)  => api(p, { method:'PUT',  body: JSON.stringify(b) });
+
+// ================================================
+// AUTH
+// ================================================
+async function doLogin() {
+  const email    = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errEl    = document.getElementById('loginError');
+  errEl.classList.add('hidden');
+  if (!email || !password) { showLoginError('Preencha e-mail e senha.'); return; }
+  const r = await apiPost('/auth.php?action=login', { email, password });
+  if (!r.ok) { showLoginError(r.data.detail || 'Credenciais inválidas'); return; }
+  state.token = r.data.token;
+  state.user  = r.data.user;
+  localStorage.setItem('nto_token', state.token);
+  localStorage.setItem('nto_user',  JSON.stringify(state.user));
+  enterApp();
+}
+function showLoginError(msg) {
+  const el = document.getElementById('loginError');
+  el.textContent = msg; el.classList.remove('hidden');
+}
+
+// ── RECUPERAÇÃO DE SENHA ──────────────────────────
+function showForgotPanel() {
+  document.getElementById('loginPanel').style.display  = 'none';
+  document.getElementById('forgotPanel').style.display = 'block';
+  document.getElementById('forgotStep1').style.display = 'block';
+  document.getElementById('forgotStep2').style.display = 'none';
+  const msg = document.getElementById('forgotMsg');
+  msg.style.display = 'none'; msg.textContent = '';
+  const fe = document.getElementById('forgotEmail');
+  if (fe) fe.value = '';
+}
+function showLoginPanel() {
+  document.getElementById('forgotPanel').style.display = 'none';
+  document.getElementById('loginPanel').style.display  = 'block';
+}
+function showForgotMsg(text, isError) {
+  const el = document.getElementById('forgotMsg');
+  el.textContent = text;
+  el.style.display = 'block';
+  el.style.background  = isError ? 'rgba(239,68,68,.15)'   : 'rgba(16,185,129,.15)';
+  el.style.border      = isError ? '1px solid rgba(239,68,68,.3)' : '1px solid rgba(16,185,129,.3)';
+  el.style.color       = isError ? '#fca5a5' : '#6ee7b7';
+}
+async function doRequestReset() {
+  const email = (document.getElementById('forgotEmail').value || '').trim();
+  if (!email) { showForgotMsg('Informe seu e-mail.', true); return; }
+  showForgotMsg('Enviando...', false);
+  const r = await fetch(API + '/auth.php?action=request-reset', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ email })
+  }).then(res=>res.json()).catch(()=>({detail:'Erro de conexão'}));
+  if (r.detail) {
+    showForgotMsg(r.detail, true); return;
+  }
+  const successMsg = r.message || 'Código enviado! Verifique seu e-mail ou contate o administrador.';
+  showForgotMsg(successMsg, false);
+  // Guarda email para usar no step 2
+  document.getElementById('forgotPanel').dataset.email = email;
+  setTimeout(() => {
+    document.getElementById('forgotStep1').style.display = 'none';
+    document.getElementById('forgotStep2').style.display = 'block';
+    document.getElementById('forgotMsg').style.display   = 'none';
+  }, 2000);
+}
+async function doResetPassword() {
+  const email   = document.getElementById('forgotPanel').dataset.email || '';
+  const code    = (document.getElementById('resetCode').value || '').trim();
+  const pass    = document.getElementById('newPassword').value;
+  const confirm = document.getElementById('newPasswordConfirm').value;
+  if (!code || code.length < 6)    { showForgotMsg('Informe o código de 6 dígitos.', true); return; }
+  if (!pass || pass.length < 6)    { showForgotMsg('A senha deve ter no mínimo 6 caracteres.', true); return; }
+  if (pass !== confirm)            { showForgotMsg('As senhas não coincidem.', true); return; }
+  showForgotMsg('Redefinindo...', false);
+  const r = await fetch(API + '/auth.php?action=do-reset', {
+    method: 'POST', headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ email, code, new_password: pass })
+  }).then(res=>res.json()).catch(()=>({detail:'Erro de conexão'}));
+  if (r.detail && !r.message) { showForgotMsg(r.detail, true); return; }
+  showForgotMsg('Senha redefinida com sucesso! Faça login.', false);
+  setTimeout(showLoginPanel, 2000);
+}
+function doLogout() {
+  state.token = null; state.user = null;
+  stopPendingCallsSound();
+  stopTVSound();
+  clearInterval(state.pollInterval);
+  clearInterval(state.tvInterval);
+  localStorage.removeItem('nto_token');
+  localStorage.removeItem('nto_user');
+  document.getElementById('mainApp').classList.add('hidden');
+  document.getElementById('loginPage').classList.remove('hidden');
+  document.getElementById('tvPanel').style.display = 'none';
+}
+function enterApp() {
+  document.getElementById('loginPage').classList.add('hidden');
+  document.getElementById('mainApp').classList.remove('hidden');
+  document.getElementById('userAvatar').textContent = state.user.name.charAt(0).toUpperCase();
+  document.getElementById('userName').textContent   = state.user.name;
+  document.getElementById('userRole').textContent   = ROLE_LABELS[state.user.role] || state.user.role;
+  loadLocations();
+  renderNav();
+  navigateTo(defaultView());
+  startPolling();
+}
+function defaultView() {
+  const r = state.user.role;
+  if (r === 'driver')    return 'chamados';
+  if (r === 'emergency') return 'chamados';
+  if (r === 'sector')    return 'envios';
+  if (r === 'financial') return 'despesas';
+  return 'dashboard';
+}
+
+// ================================================
+// LOCATIONS — carrega do banco
+// ================================================
+async function loadLocations() {
+  const r = await apiGet('/locations.php');
+  if (r.ok) state.locations = r.data;
+}
+function locationOptions(type) {
+  const filtered = type ? state.locations.filter(l => l.type === type) : state.locations;
+  const all = filtered.map(l => `<option value="${escHtml(l.name)}">${escHtml(l.name)}</option>`).join('');
+  return `<option value="">Selecione ou digite...</option>` + all;
+}
+
+// ================================================
+// TV PANEL
+// ================================================
+function openTV() {
+  const panel = document.getElementById('tvPanel');
+  panel.style.display = 'flex';
+  refreshTV();
+  clearInterval(state.tvInterval);
+  state.tvInterval = setInterval(refreshTV, 10000);
+}
+function closeTV() {
+  document.getElementById('tvPanel').style.display = 'none';
+  clearInterval(state.tvInterval);
+  stopTVSound();
+}
+
+async function refreshTV() {
+  const [cr, sr] = await Promise.all([
+    fetch(API + '/calls.php?action=pending').then(r=>r.json()).catch(()=>[]),
+    fetch(API + '/shipments.php?action=pending').then(r=>r.json()).catch(()=>[])
+  ]);
+
+  const calls = Array.isArray(cr) ? cr : [];
+  const ships = Array.isArray(sr) ? sr : [];
+  // Painel TV: mais recente em cima (created_at DESC)
+  calls.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  ships.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  const pending = calls.filter(c => c.status === 'pending');
+  const inProg  = calls.filter(c => c.status === 'in_progress');
+
+  document.getElementById('tvCallsCount').textContent = `${calls.length} ativo(s)`;
+  document.getElementById('tvShipsCount').textContent = `${ships.length} ativo(s)`;
+  document.getElementById('tvPendingCount').textContent = `${pending.length} pendente(s)`;
+  document.getElementById('tvProgressCount').textContent = `${inProg.length} em andamento`;
+
+  // Som: toca imediatamente a cada novo chamado OU nova demanda + interval 2 min
+  const pendingShips     = ships.filter(s => s.status === 'pending');
+  const newPendingIds    = new Set(pending.map(c => c.id));
+  const newPendingShipIds= new Set(pendingShips.map(s => s.id));
+  const hasNewCalls = [...newPendingIds].some(id => !state.tvPendingCallIds.has(id));
+  const hasNewShips = [...newPendingShipIds].some(id => !state.tvPendingShipIds.has(id));
+
+  state.hasPendingCalls   = pending.length > 0;
+  state.hasPendingShips   = pendingShips.length > 0;
+  state.tvPendingCallIds  = newPendingIds;
+  state.tvPendingShipIds  = newPendingShipIds;
+
+  if (hasTVPending()) {
+    if (hasNewCalls || hasNewShips) playNotification(); // novo chamado ou demanda
+    startTVSoundInterval();                             // mantém interval de 2 min
+  } else {
+    stopTVSound();
+  }
+
+  // Cards com tamanho fixo e scroll — novos chamados no topo
+  const callsList = document.getElementById('tvCallsList');
+  const shipsList = document.getElementById('tvShipsList');
+
+  // Ordenar: mais novos primeiro (topo da lista)
+  const callsSorted = [...calls].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  const shipsSorted = [...ships].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+  // Render calls
+  callsList.innerHTML = callsSorted.length === 0
+    ? `<div style="text-align:center;margin-top:60px;opacity:.3">
+         <i class="fas fa-check-circle" style="font-size:52px;color:#22c55e;display:block;margin-bottom:14px"></i>
+         <p style="color:#94a3b8;font-size:15px;font-weight:600">Nenhum chamado ativo</p>
+       </div>`
+    : callsSorted.map(c => {
+        const prog   = c.status === 'in_progress';
+        const isEmg  = c.priority === 'emergency';
+        const isUrg  = c.priority === 'urgent';
+        // Motorista assumiu → progress (sem piscar); senão borda pela prioridade
+        const cls    = prog ? 'tv-card-progress' : isEmg ? 'tv-card-emergency' : isUrg ? 'tv-card-urgent' : 'tv-card-pending';
+        const dotColor    = prog ? '#0faeaa' : isEmg ? '#f87171' : isUrg ? '#facc15' : '#22c55e';
+        const statusLabel = prog ? 'Em Andamento' : 'Aguardando';
+        const statusColor = prog ? '#0faeaa' : isEmg ? '#f87171' : isUrg ? '#facc15' : '#22c55e';
+        const driver  = c.assigned_driver_name || '';
+        const prioTag = isEmg
+          ? `<span style="background:rgba(239,68,68,.2);color:#f87171;border:1px solid rgba(239,68,68,.35);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:800">🚨 EMERGÊNCIA</span>`
+          : isUrg
+          ? `<span style="background:rgba(249,115,22,.15);color:#fb923c;border:1px solid rgba(249,115,22,.3);padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700">⚡ URGENTE</span>`
+          : '';
+        return `<div class="tv-card ${cls}" style="margin-bottom:0">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px">
+            <div style="flex:1;min-width:0">
+              <div class="tv-card-title" style="color:#fff;font-weight:900;font-size:16px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(c.origin_name)}</div>
+              <div class="tv-card-sub" style="display:flex;align-items:center;gap:5px;margin-top:3px;flex-wrap:wrap">
+                <span style="color:#475569;font-size:10px"><i class="fas fa-vial" style="margin-right:2px"></i>Retirada de Amostras</span>
+                ${prioTag}
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0">
+              <div style="display:flex;align-items:center;gap:5px">
+                <span class="${prog?'':'tv-blink'}" style="width:7px;height:7px;border-radius:50%;background:${dotColor};display:inline-block;flex-shrink:0"></span>
+                <span style="color:${statusColor};font-size:11px;font-weight:700;white-space:nowrap">${statusLabel}</span>
+              </div>
+              <div style="color:#94a3b8;font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px;margin-top:2px">
+                <i class="fas fa-clock" style="font-size:11px;color:#0faeaa"></i>${fmtDate(c.created_at)}
+              </div>
+            </div>
+          </div>
+          ${c.description ? `<div class="tv-card-desc" style="color:#94a3b8;font-size:11px;padding:5px 8px;background:rgba(255,255,255,.04);border-radius:7px;border:1px solid rgba(255,255,255,.05);margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(c.description)}</div>` : ''}
+          ${driver ? `
+          <div class="tv-card-driver" style="display:flex;align-items:center;gap:7px;padding:6px 10px;background:${prog?'rgba(15,174,170,.12)':'rgba(0,122,130,.08)'};border:1px solid ${prog?'rgba(15,174,170,.3)':'rgba(0,122,130,.25)'};border-radius:9px">
+            <i class="fas fa-user-tie" style="color:${prog?'#0faeaa':'#4dd9d5'};font-size:11px;flex-shrink:0"></i>
+            <div class="tv-driver-name" style="color:${prog?'#0faeaa':'#4dd9d5'};font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(driver)}</div>
+          </div>` : `
+          <div style="display:flex;align-items:center;gap:7px;padding:6px 10px;background:rgba(0,122,130,.05);border:1px dashed rgba(0,122,130,.2);border-radius:9px">
+            <i class="fas fa-hourglass-half tv-blink" style="color:#007a82;font-size:11px"></i>
+            <span style="color:#007a82;font-size:11px;font-weight:600">Aguardando motorista...</span>
+          </div>`}
+        </div>`;
+      }).join('');
+
+  // Render shipments
+  shipsList.innerHTML = shipsSorted.length === 0
+    ? `<div style="text-align:center;margin-top:60px;opacity:.3">
+         <i class="fas fa-check-circle" style="font-size:52px;color:#22c55e;display:block;margin-bottom:14px"></i>
+         <p style="color:#94a3b8;font-size:15px;font-weight:600">Nenhuma demanda ativa</p>
+       </div>`
+    : shipsSorted.map(s => {
+        const prog      = s.status === 'in_progress';
+        // Motorista assumiu → progress (sem piscar); aguardando → verde piscando
+        const cls       = prog ? 'tv-card-progress' : 'tv-card-pending';
+        const tipo      = s.type === 'send' ? 'Envio' : 'Retirada';
+        const tipoIcon  = s.type === 'send' ? 'fa-arrow-right' : 'fa-arrow-left';
+        const tipoColor = s.type === 'send' ? '#0faeaa' : '#4dd9d5';
+        const dotColor  = prog ? '#0faeaa' : '#22c55e';
+        const driver    = s.assigned_driver_name || '';
+        return `<div class="tv-card ${cls}" style="margin-bottom:0">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px">
+            <div style="flex:1;min-width:0">
+              <div class="tv-card-title" style="color:#fff;font-weight:900;font-size:16px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(s.origin_sector)}</div>
+              <div class="tv-card-sub" style="display:flex;align-items:center;gap:4px;margin-top:3px;flex-wrap:wrap">
+                <i class="fas ${tipoIcon}" style="color:${tipoColor};font-size:10px"></i>
+                <span style="color:#94a3b8;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:140px">${escHtml(s.destination_name)}</span>
+                <span style="background:rgba(0,122,130,.15);color:#4dd9d5;border:1px solid rgba(0,122,130,.3);padding:1px 7px;border-radius:20px;font-size:10px;font-weight:700;flex-shrink:0">${tipo}</span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0">
+              <div style="display:flex;align-items:center;gap:5px">
+                <span class="${prog?'':'tv-blink'}" style="width:7px;height:7px;border-radius:50%;background:${dotColor};display:inline-block;flex-shrink:0"></span>
+                <span style="color:${dotColor};font-size:11px;font-weight:700;white-space:nowrap">${prog?'Em Andamento':'Aguardando'}</span>
+              </div>
+              <div style="color:#94a3b8;font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px;margin-top:2px">
+                <i class="fas fa-clock" style="font-size:11px;color:#0faeaa"></i>${fmtDate(s.created_at)}
+              </div>
+            </div>
+          </div>
+          ${s.description ? `<div class="tv-card-desc" style="color:#94a3b8;font-size:11px;padding:5px 8px;background:rgba(255,255,255,.04);border-radius:7px;border:1px solid rgba(255,255,255,.05);margin-bottom:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(s.description)}</div>` : ''}
+          ${driver ? `
+          <div class="tv-card-driver" style="display:flex;align-items:center;gap:7px;padding:6px 10px;background:${prog?'rgba(0,122,130,.15)':'rgba(15,174,170,.08)'};border:1px solid ${prog?'rgba(0,122,130,.35)':'rgba(15,174,170,.25)'};border-radius:9px">
+            <i class="fas fa-user-tie" style="color:${prog?'#007a82':'#0faeaa'};font-size:11px;flex-shrink:0"></i>
+            <div class="tv-driver-name" style="color:${prog?'#4dd9d5':'#0faeaa'};font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(driver)}</div>
+          </div>` : `
+          <div style="display:flex;align-items:center;gap:7px;padding:6px 10px;background:rgba(0,122,130,.05);border:1px dashed rgba(0,122,130,.2);border-radius:9px">
+            <i class="fas fa-hourglass-half tv-blink" style="color:#007a82;font-size:11px"></i>
+            <span style="color:#007a82;font-size:11px;font-weight:600">Aguardando motorista...</span>
+          </div>`}
+        </div>`;
+      }).join('');
+}
+
+// ================================================
+// NAVIGATION
+// ================================================
+const NAV_ITEMS = [
+  { id:'dashboard', label:'Dashboard',         icon:'fa-chart-bar',   roles:['admin'] },
+  { id:'chamados',  label:'Chamados',           icon:'fa-bell',        roles:['admin','driver','emergency'] },
+  { id:'envios',    label:'Envios / Retiradas', icon:'fa-box',         roles:['admin','driver','sector'] },
+  { id:'despesas',  label:'Despesas',           icon:'fa-dollar-sign', roles:['admin','sector','financial'] },
+  { id:'relatorios',label:'Relatórios',         icon:'fa-file-alt',    roles:['admin','financial'] },
+  { id:'locais',    label:'Locais',             icon:'fa-map-marker-alt', roles:['admin'] },
+  { id:'usuarios',  label:'Usuários',           icon:'fa-users',       roles:['admin'] },
+];
+
+function renderNav() {
+  document.getElementById('sidebarNav').innerHTML = NAV_ITEMS
+    .filter(n => n.roles.includes(state.user.role))
+    .map(n => `<div class="sidebar-link" id="nav-${n.id}" onclick="navigateTo('${n.id}')"><i class="fas ${n.icon}"></i>${n.label}</div>`)
+    .join('');
+}
+
+function navigateTo(view) {
+  state.view = view;
+  document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById('nav-' + view);
+  if (el) el.classList.add('active');
+  const titles = {
+    dashboard: ['Dashboard','Visão geral'],
+    chamados:  ['Chamados','Retirada de Amostras'],
+    envios:    ['Envios / Retiradas','Demandas de logística'],
+    despesas:  ['Despesas','Solicitações financeiras'],
+    relatorios:['Relatórios','Análises'],
+    locais:    ['Locais','Unidades de emergência, setores e locais de retirada'],
+    usuarios:  ['Usuários','Gerenciamento de acesso'],
+  };
+  const [title, sub] = titles[view] || ['',''];
+  document.getElementById('pageTitle').textContent    = title;
+  document.getElementById('pageSubtitle').textContent = sub;
+  closeSidebar();
+  const views = { dashboard:renderDashboard, chamados:renderChamados, envios:renderEnvios, despesas:renderDespesas, relatorios:renderRelatorios, locais:renderLocais, usuarios:renderUsuarios };
+  if (views[view]) views[view]();
+}
+
+function setView(html) { document.getElementById('viewContainer').innerHTML = html; }
+function loading() { setView(`<div class="flex items-center justify-center h-64 text-gray-400"><div class="text-center"><i class="fas fa-spinner fa-spin text-3xl mb-3"></i><p>Carregando...</p></div></div>`); }
+
+// ================================================
+// POLLING
+// ================================================
+function startPolling() {
+  clearInterval(state.pollInterval);
+  state.pollInterval = setInterval(poll, 10000);
+  poll();
+}
+async function poll() {
+  const role = state.user?.role;
+  if (!role) return;
+
+  if (['admin','driver','emergency'].includes(role)) {
+    const r = await apiGet('/calls.php?action=pending');
+    if (r.ok) {
+      const pending = r.data.filter(c => c.status === 'pending');
+      const newIds  = pending.map(c => c.id);
+      const isNew   = newIds.some(id => !state.pendingCallIds.has(id));
+      state.hasPendingCalls = pending.length > 0;
+      if (pending.length > 0 && ['admin','driver'].includes(role)) {
+        if (isNew || !state.soundInterval) startPendingCallsSound();
+      } else { stopPendingCallsSound(); }
+      state.pendingCallIds = new Set(newIds);
+    }
+  }
+  if (['admin','driver','sector'].includes(role)) {
+    const r = await apiGet('/shipments.php?action=pending');
+    if (r.ok) {
+      const pending = r.data.filter(s => s.status === 'pending');
+      const isNew   = pending.some(s => !state.pendingShipIds.has(s.id));
+      if (isNew && ['admin','driver'].includes(role)) playDoubleBeep();
+      state.pendingShipIds = new Set(pending.map(s => s.id));
+    }
+  }
+  if (['admin','financial'].includes(role)) {
+    const r = await apiGet('/expenses.php?status=pending');
+    if (r.ok) {
+      const pending = r.data.filter(e => e.status === 'pending');
+      const isNew   = pending.some(e => !state.pendingExpIds.has(e.id));
+      if (isNew) playDoubleBeep();
+      state.pendingExpIds = new Set(pending.map(e => e.id));
+    }
+  }
+}
+
+// ================================================
+// DASHBOARD
+// ================================================
+async function renderDashboard() {
+  loading();
+  const [cr, sr, er] = await Promise.all([apiGet('/calls.php'), apiGet('/shipments.php'), apiGet('/expenses.php')]);
+  const calls = cr.ok ? cr.data : [];
+  const ships = sr.ok ? sr.data : [];
+  const exps  = er.ok ? er.data : [];
+  const cnt   = (arr,k,v) => arr.filter(i=>i[k]===v).length;
+
+  setView(`
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      ${statCard('Chamados Pendentes', cnt(calls,'status','pending'),   'fa-bell',        '#fbbf24','#fffbeb')}
+      ${statCard('Em Andamento',       cnt(calls,'status','in_progress'),'fa-truck',      '#10b981','#f0fdf4')}
+      ${statCard('Envios Pendentes',   cnt(ships,'status','pending'),   'fa-box',          '#6366f1','#eef2ff')}
+      ${statCard('Despesas Pendentes', cnt(exps, 'status','pending'),   'fa-dollar-sign',  '#ef4444','#fef2f2')}
+    </div>
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="card p-5">
+        <h3 class="font-bold text-gray-800 mb-4"><i class="fas fa-bell text-yellow-500 mr-2"></i>Últimos Chamados</h3>
+        ${calls.slice(0,5).map(c=>`
+          <div class="flex items-center justify-between py-2 border-b last:border-0">
+            <div><p class="font-semibold text-sm text-gray-800">${escHtml(c.origin_name)}</p><p class="text-xs text-gray-400">${fmtDate(c.created_at)}</p></div>
+            <span class="badge badge-${badgeClass(c.status)}">${STATUS_LABELS[c.status]||c.status}</span>
+          </div>`).join('') || '<p class="text-gray-400 text-sm">Nenhum chamado</p>'}
+      </div>
+      <div class="card p-5">
+        <h3 class="font-bold text-gray-800 mb-4"><i class="fas fa-dollar-sign text-red-400 mr-2"></i>Últimas Despesas</h3>
+        ${exps.slice(0,5).map(e=>`
+          <div class="flex items-center justify-between py-2 border-b last:border-0">
+            <div><p class="font-semibold text-sm text-gray-800">${escHtml(e.beneficiario||e.created_by_name)}</p><p class="text-xs text-gray-400">${fmtMoney(e.amount)}</p></div>
+            <span class="badge badge-${badgeClass(e.status)}">${STATUS_LABELS[e.status]||e.status}</span>
+          </div>`).join('') || '<p class="text-gray-400 text-sm">Nenhuma despesa</p>'}
+      </div>
+    </div>
+  `);
+}
+function statCard(label, value, icon, iconColor, iconBg) {
+  return `<div class="stat-card"><div class="stat-icon" style="background:${iconBg};color:${iconColor}"><i class="fas ${icon}"></i></div><div><div class="text-2xl font-bold text-gray-800">${value}</div><div class="text-gray-400 text-xs">${label}</div></div></div>`;
+}
+
+// ================================================
+// CHAMADOS
+// ================================================
+async function renderChamados() {
+  loading();
+  const r = await apiGet('/calls.php');
+  if (!r.ok) { setView('<p class="text-red-500">Erro ao carregar chamados.</p>'); return; }
+  const calls     = r.data;
+  const canCreate = ['emergency'].includes(state.user.role);
+  const canAssume = ['admin','driver'].includes(state.user.role);
+  // Usuários de unidade/setor veem apenas seus próprios chamados
+  const visibleCalls = ['emergency','sector'].includes(state.user.role)
+    ? calls.filter(c => c.created_by_id === state.user.id)
+    : calls;
+
+  setView(`
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-bold text-gray-700">${visibleCalls.length} chamado(s)</h3>
+      ${canCreate ? `<button class="btn btn-primary btn-sm" onclick="openChamadoForm()"><i class="fas fa-plus"></i> Novo Chamado</button>` : ''}
+    </div>
+    <div class="space-y-3">
+      ${visibleCalls.length===0 ? '<div class="card p-8 text-center text-gray-400">Nenhum chamado encontrado</div>'
+        : visibleCalls.map(c => callCard(c, canAssume)).join('')}
+    </div>`);
+}
+
+// Card genérico (admin / visualização)
+function callCard(c, canAssume) {
+  const prog = c.status==='in_progress', done = c.status==='completed';
+  const prioClass = c.priority==='emergency' ? 'emergency' : c.priority==='urgent' ? 'urgent' : '';
+  const isMyCall = canAssume && prog && c.assigned_driver_id===state.user?.id;
+
+  // Motoristas recebem card especial mobile-friendly
+  if (state.user?.role === 'driver') return driverCallCard(c);
+
+  return `
+  <div class="card p-4 call-card ${prog?'in_progress':done?'completed':prioClass}">
+    <div class="flex items-start justify-between gap-3 flex-wrap">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 flex-wrap mb-1">
+          <span class="font-bold text-gray-800">${escHtml(c.origin_name)}</span>
+          <span class="badge badge-${badgeClass(c.status)}">${STATUS_LABELS[c.status]||c.status}</span>
+          ${c.priority!=='normal'?`<span class="badge" style="background:#fee2e2;color:#991b1b">${PRIORITY_LABELS[c.priority]}</span>`:''}
+        </div>
+        <p class="text-sm text-gray-500"><i class="fas fa-vial mr-1 text-gray-400"></i>Retirada de Amostras</p>
+        ${c.description?`<p class="text-sm text-gray-500 mt-1">${escHtml(c.description)}</p>`:''}
+        ${prog?`<p class="text-sm text-green-700 font-semibold mt-1"><i class="fas fa-user mr-1"></i>Motorista: ${escHtml(c.assigned_driver_name||'')}</p>`:''}
+        ${done?`<p class="text-sm text-indigo-600 font-semibold mt-1"><i class="fas fa-check-circle mr-1"></i>Concluído: ${escHtml(c.assigned_driver_name||'')}</p>`:''}
+      </div>
+      <div class="flex flex-col items-end gap-2">
+        <p class="text-xs text-gray-400">${fmtDate(c.created_at)}</p>
+        ${canAssume && c.status==='pending' ? `<button class="btn btn-success btn-sm" onclick="assumeCall('${c.id}')"><i class="fas fa-hand-paper"></i> Assumir</button>` : ''}
+        ${isMyCall ? `<button class="btn btn-primary btn-sm" onclick="completeCall('${c.id}')"><i class="fas fa-check"></i> Concluir</button>` : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+// Card do motorista — otimizado para mobile com botões grandes
+function driverCallCard(c) {
+  const prog = c.status==='in_progress', done = c.status==='completed';
+  const isMyCall = prog && c.assigned_driver_id === state.user?.id;
+  const bgBorder = prog ? 'in_progress' : done ? 'completed' : (c.priority==='emergency'?'emergency':c.priority==='urgent'?'urgent':'');
+  const prioColor = c.priority==='emergency' ? '#ef4444' : c.priority==='urgent' ? '#f97316' : '#6b7280';
+
+  return `
+  <div class="driver-call-card ${bgBorder}">
+    <div class="flex items-start justify-between mb-3">
+      <div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-lg font-bold text-gray-900">${escHtml(c.origin_name)}</span>
+          <span class="badge badge-${badgeClass(c.status)}" style="font-size:13px">${STATUS_LABELS[c.status]||c.status}</span>
+        </div>
+        <p class="text-sm text-gray-500 mt-0.5"><i class="fas fa-vial mr-1"></i>Retirada de Amostras</p>
+      </div>
+      ${c.priority!=='normal'?`<span class="font-bold text-sm px-3 py-1 rounded-full" style="background:${prioColor}20;color:${prioColor}">${PRIORITY_LABELS[c.priority]}</span>`:''}
+    </div>
+    ${c.description?`<p class="text-sm text-gray-600 mb-2 p-2 bg-gray-50 rounded-lg">${escHtml(c.description)}</p>`:''}
+    ${prog?`<div class="flex items-center gap-2 mb-2 p-2 rounded-lg" style="background:#d1fae5"><i class="fas fa-user text-green-600"></i><span class="text-green-800 font-semibold text-sm">${escHtml(c.assigned_driver_name||'')}</span></div>`:''}
+    ${done?`<div class="flex items-center gap-2 mb-2 p-2 rounded-lg" style="background:#e0e7ff"><i class="fas fa-check-circle text-indigo-600"></i><span class="text-indigo-800 font-semibold text-sm">Concluído por ${escHtml(c.assigned_driver_name||'')}</span></div>`:''}
+    <p class="text-xs text-gray-400 mb-2"><i class="fas fa-clock mr-1"></i>${fmtDate(c.created_at)}</p>
+    ${c.status==='pending' ? `<button class="driver-btn driver-btn-assume" onclick="assumeCall('${c.id}')"><i class="fas fa-hand-paper"></i> Assumir Chamado</button>` : ''}
+    ${isMyCall ? `<button class="driver-btn driver-btn-complete" onclick="completeCall('${c.id}')"><i class="fas fa-check-circle"></i> Marcar como Concluído</button>` : ''}
+  </div>`;
+}
+
+function selectPriority(val) {
+  document.getElementById('cPriority').value = val;
+  const cfg = {
+    normal:    { border:'#3b82f6', bg:'#eff6ff', textColor:'#1d4ed8' },
+    urgent:    { border:'#f59e0b', bg:'#fffbeb', textColor:'#b45309' },
+    emergency: { border:'#ef4444', bg:'#fef2f2', textColor:'#b91c1c' },
+  };
+  ['normal','urgent','emergency'].forEach(p => {
+    const el = document.getElementById('prio-opt-' + p);
+    if (!el) return;
+    if (p === val) {
+      el.style.borderColor  = cfg[p].border;
+      el.style.background   = cfg[p].bg;
+      el.style.transform    = 'scale(1.04)';
+      el.style.boxShadow    = `0 0 0 3px ${cfg[p].border}33`;
+    } else {
+      el.style.borderColor  = '#e2e8f0';
+      el.style.background   = 'var(--card)';
+      el.style.transform    = '';
+      el.style.boxShadow    = '';
+    }
+  });
+}
+
+async function openChamadoForm() {
+  await loadLocations();
+  const emergencyLocs = state.locations.filter(l=>l.type==='emergency_unit');
+  const locOptions = emergencyLocs.length
+    ? `<option value="">Selecione o local...</option>` + emergencyLocs.map(l=>`<option value="${escHtml(l.name)}">${escHtml(l.name)}</option>`).join('')
+    : `<option value="">Nenhum local de emergência cadastrado</option>`;
+
+  openModal(`
+    <div class="p-5">
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <h3 class="font-bold text-lg text-gray-800">Novo Chamado</h3>
+          <p class="text-xs text-gray-400">Retirada de Amostras</p>
+        </div>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-gray-100 text-gray-500 hover:bg-gray-200 flex items-center justify-center"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Local de Origem</label>
+        <select id="cOrigin" class="form-input" style="font-size:16px;padding:12px">
+          ${locOptions}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Prioridade</label>
+        <div class="grid grid-cols-3 gap-2 mt-1">
+          <div id="prio-opt-normal" onclick="selectPriority('normal')"
+               style="cursor:pointer;padding:14px 8px;border:2px solid #3b82f6;background:#eff6ff;border-radius:12px;text-align:center;transition:all .2s;box-shadow:0 0 0 3px #3b82f633">
+            <i class="fas fa-minus-circle" style="color:#3b82f6;font-size:24px;display:block;margin-bottom:5px"></i>
+            <span style="font-size:12px;font-weight:800;color:#1d4ed8;display:block">Normal</span>
+            <span style="font-size:10px;color:#3b82f6;display:block;margin-top:1px">Padrão</span>
+          </div>
+          <div id="prio-opt-urgent" onclick="selectPriority('urgent')"
+               style="cursor:pointer;padding:14px 8px;border:2px solid #e2e8f0;background:var(--card);border-radius:12px;text-align:center;transition:all .2s">
+            <i class="fas fa-exclamation-circle" style="color:#f59e0b;font-size:24px;display:block;margin-bottom:5px"></i>
+            <span style="font-size:12px;font-weight:800;color:#92400e;display:block">Urgente</span>
+            <span style="font-size:10px;color:#b45309;display:block;margin-top:1px">Prioridade alta</span>
+          </div>
+          <div id="prio-opt-emergency" onclick="selectPriority('emergency')"
+               style="cursor:pointer;padding:14px 8px;border:2px solid #e2e8f0;background:var(--card);border-radius:12px;text-align:center;transition:all .2s">
+            <i class="fas fa-bolt" style="color:#ef4444;font-size:24px;display:block;margin-bottom:5px"></i>
+            <span style="font-size:12px;font-weight:800;color:#991b1b;display:block">Emergência</span>
+            <span style="font-size:10px;color:#dc2626;display:block;margin-top:1px">Crítico</span>
+          </div>
+        </div>
+        <input type="hidden" id="cPriority" value="normal">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Observação <span class="text-gray-400 font-normal">(opcional)</span></label>
+        <textarea id="cDesc" class="form-input" rows="2" placeholder="Ex: Material frágil, aguardar portaria..." style="font-size:16px"></textarea>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 mt-2">
+        <button class="btn btn-outline" style="justify-content:center;padding:12px" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary" style="justify-content:center;padding:12px;font-size:15px" onclick="submitChamado()"><i class="fas fa-bell"></i> Abrir</button>
+      </div>
+    </div>`);
+}
+
+async function submitChamado() {
+  const origin   = document.getElementById('cOrigin').value;
+  const priority = document.getElementById('cPriority').value;
+  const desc     = document.getElementById('cDesc').value.trim();
+  if (!origin) { alert('Selecione o local de origem.'); return; }
+  const r = await apiPost('/calls.php', { origin_name: origin, priority, description: desc, type:'sample_collection' });
+  if (!r.ok) { alert(r.data.detail || 'Erro ao criar chamado'); return; }
+  closeModal(); renderChamados();
+}
+
+async function assumeCall(id) {
+  if (!confirm('Assumir este chamado?')) return;
+  const r = await apiPut(`/calls.php?id=${id}&action=assign`, {});
+  if (!r.ok) { alert(r.data.detail || 'Erro'); return; }
+  renderChamados();
+}
+async function completeCall(id) {
+  const notes = prompt('Observações (opcional):') ?? '';
+  const r = await apiPut(`/calls.php?id=${id}&action=complete`, { notes });
+  if (!r.ok) { alert(r.data.detail || 'Erro'); return; }
+  renderChamados();
+}
+
+// ================================================
+// ENVIOS
+// ================================================
+async function renderEnvios() {
+  loading();
+  const r = await apiGet('/shipments.php');
+  if (!r.ok) { setView('<p class="text-red-500">Erro ao carregar envios.</p>'); return; }
+  const ships     = r.data;
+  const canCreate = ['sector'].includes(state.user.role);
+  const canAssume = ['admin','driver'].includes(state.user.role);
+
+  setView(`
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-bold text-gray-700">${ships.length} demanda(s)</h3>
+      ${canCreate ? `<button class="btn btn-primary btn-sm" onclick="openEnvioForm()"><i class="fas fa-plus"></i> Nova Demanda</button>` : ''}
+    </div>
+    <div class="space-y-3">
+      ${ships.length===0 ? '<div class="card p-8 text-center text-gray-400">Nenhuma demanda encontrada</div>'
+        : ships.map(s => shipCard(s, canAssume)).join('')}
+    </div>`);
+}
+
+function shipCard(s, canAssume) {
+  const prog = s.status==='in_progress', done = s.status==='completed';
+  const tipo = s.type==='send' ? 'Envio' : 'Retirada';
+  const icon = s.type==='send' ? 'fa-arrow-right' : 'fa-arrow-left';
+  const borderColor = s.priority==='urgent' ? '#f97316' : '#6366f1';
+  return `
+  <div class="card p-4 call-card ${prog?'in_progress':done?'completed':''}" style="${!prog&&!done?'border-left-color:'+borderColor:''}">
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex-1">
+        <div class="flex items-center gap-2 flex-wrap mb-1">
+          <span class="badge" style="background:#e0e7ff;color:#3730a3"><i class="fas ${icon} mr-1"></i>${tipo}</span>
+          <span class="font-bold text-gray-800">${escHtml(s.origin_sector)}</span>
+          <i class="fas fa-long-arrow-alt-right text-gray-400 text-xs"></i>
+          <span class="font-semibold text-gray-700">${escHtml(s.destination_name)}</span>
+          <span class="badge badge-${badgeClass(s.status)}">${STATUS_LABELS[s.status]||s.status}</span>
+          ${s.priority==='urgent'?`<span class="badge" style="background:#fee2e2;color:#991b1b">Urgente</span>`:''}
+        </div>
+        ${s.description?`<p class="text-sm text-gray-500 mt-1">${escHtml(s.description)}</p>`:''}
+        ${prog?`<p class="text-sm text-green-700 font-semibold mt-1"><i class="fas fa-user mr-1"></i>Motorista: ${escHtml(s.assigned_driver_name||'')}</p>`:''}
+        ${done?`<p class="text-sm text-indigo-600 font-semibold mt-1"><i class="fas fa-check-circle mr-1"></i>Concluído por: ${escHtml(s.assigned_driver_name||'')}</p>`:''}
+      </div>
+      <div class="text-right flex-shrink-0">
+        <p class="text-xs text-gray-400 mb-2">${fmtDate(s.created_at)}</p>
+        ${canAssume && s.status==='pending' ? `<button class="btn btn-success btn-sm" onclick="assumeShip('${s.id}')"><i class="fas fa-hand-paper"></i> Assumir</button>` : ''}
+        ${canAssume && prog && s.assigned_driver_id===state.user.id ? `<button class="btn btn-primary btn-sm" onclick="completeShip('${s.id}')"><i class="fas fa-check"></i> Concluir</button>` : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+async function openEnvioForm() {
+  await loadLocations();
+  const origOpts = state.locations.filter(l => l.type==='internal_sector')
+    .map(l => `<option value="${escHtml(l.name)}">${escHtml(l.name)}</option>`).join('');
+  const destOpts = state.locations.filter(l => l.type==='pickup_point')
+    .map(l => `<option value="${escHtml(l.name)}">${escHtml(l.name)}</option>`).join('');
+
+  openModal(`
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-lg text-gray-800">Nova Demanda</h3>
+        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tipo</label>
+        <select id="sType" class="form-input">
+          <option value="send">Envio</option>
+          <option value="pickup">Retirada</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Setor de Origem</label>
+        <select id="sOrigin" class="form-input">
+          <option value="">Selecione...</option>
+          ${origOpts || '<option disabled>Nenhum setor cadastrado</option>'}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Destino</label>
+        <select id="sDest" class="form-input">
+          <option value="">Selecione...</option>
+          ${destOpts || '<option disabled>Nenhum destino cadastrado</option>'}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Prioridade</label>
+        <select id="sPriority" class="form-input">
+          <option value="normal">Normal</option>
+          <option value="urgent">Urgente</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Descrição <span class="text-gray-400 font-normal">(opcional)</span></label>
+        <textarea id="sDesc" class="form-input" rows="2"></textarea>
+      </div>
+      <div class="flex gap-3 mt-4">
+        <button class="btn btn-outline flex-1" style="justify-content:center" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary flex-1" style="justify-content:center" onclick="submitEnvio()"><i class="fas fa-paper-plane"></i> Enviar</button>
+      </div>
+    </div>`);
+}
+
+async function submitEnvio() {
+  const type     = document.getElementById('sType').value;
+  const origin   = document.getElementById('sOrigin').value;
+  const dest     = document.getElementById('sDest').value;
+  const priority = document.getElementById('sPriority').value;
+  const desc     = document.getElementById('sDesc').value.trim();
+  if (!origin || !dest) { alert('Selecione origem e destino.'); return; }
+  const r = await apiPost('/shipments.php', { type, origin_sector:origin, destination_name:dest, priority, description:desc });
+  if (!r.ok) { alert(r.data.detail || 'Erro'); return; }
+  closeModal(); renderEnvios();
+}
+
+async function assumeShip(id) {
+  if (!confirm('Assumir esta demanda?')) return;
+  const r = await apiPut(`/shipments.php?id=${id}&action=assign`, {});
+  if (!r.ok) { alert(r.data.detail || 'Erro'); return; }
+  renderEnvios();
+}
+async function completeShip(id) {
+  const notes = prompt('Observações (opcional):') ?? '';
+  const r = await apiPut(`/shipments.php?id=${id}&action=complete`, { notes });
+  if (!r.ok) { alert(r.data.detail || 'Erro'); return; }
+  renderEnvios();
+}
+
+// ================================================
+// DESPESAS
+// ================================================
+async function renderDespesas() {
+  loading();
+  const r = await apiGet('/expenses.php');
+  if (!r.ok) { setView('<p class="text-red-500">Erro ao carregar despesas.</p>'); return; }
+  const expenses  = r.data;
+  const canCreate = ['admin','sector'].includes(state.user.role);
+  const canApprove= ['admin','financial'].includes(state.user.role);
+  const canRelease= ['admin','financial'].includes(state.user.role);
+
+  setView(`
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-bold text-gray-700">${expenses.length} solicitação(ões)</h3>
+      ${canCreate ? `<button class="btn btn-primary btn-sm" onclick="openDespesaForm()"><i class="fas fa-plus"></i> Nova Solicitação</button>` : ''}
+    </div>
+    <div class="space-y-3">
+      ${expenses.length===0 ? '<div class="card p-8 text-center text-gray-400">Nenhuma despesa encontrada</div>'
+        : expenses.map(e => expenseCard(e, canApprove, canRelease)).join('')}
+    </div>`);
+}
+
+function expenseCard(e, canApprove, canRelease) {
+  const formaLabel = { dinheiro:'Dinheiro', pix:'PIX', cartao:'Cartão', transferencia:'Transferência' };
+  return `
+  <div class="card p-4">
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex-1">
+        <div class="flex items-center gap-2 flex-wrap mb-2">
+          <span class="font-bold text-gray-800">${escHtml(e.beneficiario||e.created_by_name)}</span>
+          <span class="badge badge-${badgeClass(e.status)}">${STATUS_LABELS[e.status]||e.status}</span>
+        </div>
+        <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-gray-600">
+          <span><b>Solicitante:</b> ${escHtml(e.solicitante||e.created_by_name)}</span>
+          <span><b>Valor:</b> ${fmtMoney(e.amount)}</span>
+          ${e.centro_custo?`<span><b>C. Custo:</b> ${escHtml(e.centro_custo)}</span>`:''}
+          ${e.competencia?`<span><b>Competência:</b> ${escHtml(e.competencia)}</span>`:''}
+          ${e.forma_pagamento?`<span><b>Pagamento:</b> ${formaLabel[e.forma_pagamento]||e.forma_pagamento}</span>`:''}
+          ${e.cpf_cnpj?`<span><b>CPF/CNPJ:</b> ${escHtml(e.cpf_cnpj)}</span>`:''}
+          ${e.data_limite_pag?`<span><b>Vencimento:</b> ${fmtDateOnly(e.data_limite_pag)}</span>`:''}
+        </div>
+        ${e.description?`<p class="text-sm text-gray-500 mt-1"><b>Ref:</b> ${escHtml(e.description)}</p>`:''}
+        ${e.obs?`<p class="text-sm text-gray-500 mt-1"><b>OBS:</b> ${escHtml(e.obs)}</p>`:''}
+        ${e.rejection_reason?`<p class="text-sm text-red-500 mt-1"><b>Motivo rejeição:</b> ${escHtml(e.rejection_reason)}</p>`:''}
+        ${e.approved_by_name?`<p class="text-xs text-gray-400 mt-1">Aprovado por: ${escHtml(e.approved_by_name)} — ${fmtDate(e.approved_at)}</p>`:''}
+        ${e.released_by_name?`<p class="text-xs text-gray-400">Liberado por: ${escHtml(e.released_by_name)} — ${fmtDate(e.released_at)}</p>`:''}
+      </div>
+      <div class="text-right flex-shrink-0">
+        <p class="text-xs text-gray-400 mb-2">${fmtDate(e.created_at)}</p>
+        <button class="btn btn-outline btn-sm" onclick="viewExpenseDetail('${e.id}')"><i class="fas fa-eye"></i> Ver</button>
+        <div class="flex gap-2 mt-2 justify-end flex-wrap">
+          ${canApprove && e.status==='pending' ? `
+            <button class="btn btn-success btn-sm" onclick="approveExp('${e.id}')"><i class="fas fa-check"></i> Aprovar</button>
+            <button class="btn btn-danger btn-sm"  onclick="rejectExp('${e.id}')"><i class="fas fa-times"></i> Rejeitar</button>` : ''}
+          ${canRelease && e.status==='approved' ? `
+            <button class="btn btn-primary btn-sm" onclick="releaseExp('${e.id}')"><i class="fas fa-unlock"></i> Liberar</button>` : ''}
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+async function viewExpenseDetail(id) {
+  const r = await apiGet(`/expenses.php?id=${id}`);
+  if (!r.ok) { alert('Erro ao carregar'); return; }
+  const e = r.data;
+  const formaLabel = { dinheiro:'Dinheiro', pix:'PIX', cartao:'Cartão', transferencia:'Transferência' };
+  const row = (label, val) => val ? `<div class="flex gap-2 py-2 border-b"><span class="font-semibold text-gray-500 w-44 flex-shrink-0 text-sm">${label}</span><span class="text-sm text-gray-800">${escHtml(String(val))}</span></div>` : '';
+
+  openModal(`
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-lg text-gray-800">Detalhes da Solicitação</h3>
+        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="mb-3"><span class="badge badge-${badgeClass(e.status)} text-sm">${STATUS_LABELS[e.status]||e.status}</span></div>
+      ${row('Solicitante',          e.solicitante||e.created_by_name)}
+      ${row('Data da Solicitação',  fmtDateOnly(e.data_solicitacao||e.created_at))}
+      ${row('Centro de Custo',      e.centro_custo)}
+      ${row('Processo',             e.processo)}
+      ${row('Classif. Financeira',  e.classificacao_fin)}
+      ${row('Competência',          e.competencia)}
+      ${row('Pagamento ref. a',     e.description)}
+      ${row('Valor',                fmtMoney(e.amount))}
+      ${row('Beneficiário',         e.beneficiario)}
+      ${row('CPF/CNPJ',             e.cpf_cnpj)}
+      ${row('Forma de Pagamento',   formaLabel[e.forma_pagamento]||e.forma_pagamento)}
+      ${row('Emite Nota Fiscal',    e.emite_nota_fiscal==='sim'?'Sim':e.emite_nota_fiscal==='nao'?'Não':e.emite_nota_fiscal)}
+      <div class="mt-3 mb-2 text-xs font-bold text-gray-400 uppercase tracking-wide">Dados Bancários</div>
+      ${row('Titular',             e.titular)}
+      ${row('Banco',               e.banco)}
+      ${row('Agência',             e.agencia)}
+      ${row('Conta',               e.conta)}
+      ${row('Chave PIX',           e.pix_chave)}
+      ${row('Data Limite Pag.',    fmtDateOnly(e.data_limite_pag))}
+      ${row('OBS',                 e.obs)}
+      ${e.approved_by_name ? row('Aprovado por', e.approved_by_name + ' — ' + fmtDate(e.approved_at)) : ''}
+      ${e.released_by_name ? row('Liberado por', e.released_by_name + ' — ' + fmtDate(e.released_at)) : ''}
+      ${e.rejection_reason ? row('Motivo Rejeição', e.rejection_reason) : ''}
+      <div class="mt-4 flex justify-end"><button class="btn btn-outline" onclick="closeModal()">Fechar</button></div>
+    </div>`, true);
+}
+
+function openDespesaForm() {
+  openModal(`
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-lg text-gray-800">Solicitação de Despesa</h3>
+        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="form-group col-span-2">
+          <label class="form-label">Solicitante</label>
+          <input type="text" id="dSolicitante" class="form-input" placeholder="Nome do solicitante">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Data da Solicitação</label>
+          <input type="date" id="dDataSol" class="form-input" value="${today()}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Centro de Custo</label>
+          <input type="text" id="dCentro" class="form-input" placeholder="Ex: ADM-001">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Processo</label>
+          <input type="text" id="dProcesso" class="form-input" placeholder="Número do processo">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Classificação Financeira</label>
+          <input type="text" id="dClassif" class="form-input" placeholder="Ex: Despesa Operacional">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Competência</label>
+          <input type="month" id="dCompetencia" class="form-input">
+        </div>
+        <div class="form-group col-span-2">
+          <label class="form-label">Pagamento referente a</label>
+          <input type="text" id="dPagRef" class="form-input" placeholder="Descreva o pagamento">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Valor</label>
+          <input type="number" id="dValor" class="form-input" placeholder="0,00" step="0.01" min="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Beneficiário</label>
+          <input type="text" id="dBenef" class="form-input" placeholder="Nome do beneficiário">
+        </div>
+        <div class="form-group">
+          <label class="form-label">CPF/CNPJ</label>
+          <input type="text" id="dCpfCnpj" class="form-input" placeholder="000.000.000-00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Forma de Pagamento</label>
+          <select id="dForma" class="form-input">
+            <option value="">Selecione...</option>
+            <option value="dinheiro">Dinheiro</option>
+            <option value="pix">PIX</option>
+            <option value="cartao">Cartão</option>
+            <option value="transferencia">Transferência</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Emite Nota Fiscal</label>
+          <select id="dNota" class="form-input">
+            <option value="">Selecione...</option>
+            <option value="sim">Sim</option>
+            <option value="nao">Não</option>
+          </select>
+        </div>
+      </div>
+
+      <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mt-1 mb-3">Dados Bancários</p>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="form-group">
+          <label class="form-label">Titular</label>
+          <input type="text" id="dTitular" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Banco</label>
+          <input type="text" id="dBanco" class="form-input" placeholder="Ex: Bradesco">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Agência</label>
+          <input type="text" id="dAgencia" class="form-input" placeholder="0000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Conta</label>
+          <input type="text" id="dConta" class="form-input" placeholder="00000-0">
+        </div>
+        <div class="form-group col-span-2">
+          <label class="form-label">Chave PIX</label>
+          <input type="text" id="dPix" class="form-input" placeholder="CPF, CNPJ, e-mail ou telefone">
+        </div>
+        <div class="form-group col-span-2">
+          <label class="form-label">Data Limite para Pagamento</label>
+          <input type="date" id="dDataLim" class="form-input">
+        </div>
+        <div class="form-group col-span-2">
+          <label class="form-label">OBS</label>
+          <textarea id="dObs" class="form-input" rows="3" placeholder="Tipo da chave PIX, informações adicionais..."></textarea>
+        </div>
+      </div>
+
+      <div class="avisos-box">
+        <h4><i class="fas fa-exclamation-triangle mr-1"></i> AVISOS</h4>
+        <ul class="list-disc pl-4">
+          <li>Deve constar na linha "OBS" se a chave PIX é do tipo E-mail, CPF, CNPJ ou Telefone.</li>
+          <li>A data limite para pagamento deve ser de no mínimo 24 horas após a data da solicitação.</li>
+          <li>Deve constar neste campo toda informação obrigatória ou que o solicitante julgue necessária.</li>
+          <li>A solicitação permanecerá em standby até que a informação seja corrigida por meio de novo envio da guia.</li>
+          <li>O departamento financeiro aceitará apenas uma solicitação por guia.</li>
+          <li>O departamento financeiro não se responsabiliza por correções na guia ou nas informações inseridas.</li>
+        </ul>
+      </div>
+
+      <div class="flex gap-3 mt-4">
+        <button class="btn btn-outline flex-1" style="justify-content:center" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary flex-1" style="justify-content:center" onclick="submitDespesa()"><i class="fas fa-paper-plane"></i> Enviar</button>
+      </div>
+    </div>`, true);
+}
+
+async function submitDespesa() {
+  const competenciaRaw = document.getElementById('dCompetencia').value;
+  const competencia    = competenciaRaw ? competenciaRaw.slice(5,7)+'/'+competenciaRaw.slice(0,4) : null;
+  const valor          = document.getElementById('dValor').value;
+
+  const body = {
+    solicitante:       document.getElementById('dSolicitante').value.trim() || null,
+    data_solicitacao:  document.getElementById('dDataSol').value || null,
+    centro_custo:      document.getElementById('dCentro').value.trim() || null,
+    processo:          document.getElementById('dProcesso').value.trim() || null,
+    classificacao_fin: document.getElementById('dClassif').value.trim() || null,
+    competencia,
+    pagamento_ref:     document.getElementById('dPagRef').value.trim() || null,
+    valor:             valor ? parseFloat(valor) : 0,
+    beneficiario:      document.getElementById('dBenef').value.trim() || null,
+    cpf_cnpj:          document.getElementById('dCpfCnpj').value.trim() || null,
+    forma_pagamento:   document.getElementById('dForma').value || null,
+    emite_nota_fiscal: document.getElementById('dNota').value || null,
+    titular:           document.getElementById('dTitular').value.trim() || null,
+    banco:             document.getElementById('dBanco').value.trim() || null,
+    agencia:           document.getElementById('dAgencia').value.trim() || null,
+    conta:             document.getElementById('dConta').value.trim() || null,
+    pix_chave:         document.getElementById('dPix').value.trim() || null,
+    data_limite_pag:   document.getElementById('dDataLim').value || null,
+    obs:               document.getElementById('dObs').value.trim() || null,
+  };
+
+  const r = await apiPost('/expenses.php', body);
+  if (!r.ok) { alert(r.data.detail || 'Erro ao enviar solicitação'); return; }
+  closeModal(); renderDespesas();
+}
+
+async function approveExp(id) {
+  if (!confirm('Aprovar esta despesa?')) return;
+  const r = await apiPut(`/expenses.php?id=${id}&action=approve`, {});
+  if (!r.ok) { alert(r.data.detail || 'Erro'); return; }
+  renderDespesas();
+}
+async function rejectExp(id) {
+  const reason = prompt('Motivo da rejeição:');
+  if (reason === null) return;
+  const r = await apiPut(`/expenses.php?id=${id}&action=reject`, { reason });
+  if (!r.ok) { alert(r.data.detail || 'Erro'); return; }
+  renderDespesas();
+}
+async function releaseExp(id) {
+  if (!confirm('Liberar pagamento?')) return;
+  const r = await apiPut(`/expenses.php?id=${id}&action=release`, {});
+  if (!r.ok) { alert(r.data.detail || 'Erro'); return; }
+  renderDespesas();
+}
+
+// ================================================
+// RELATÓRIOS
+// ================================================
+let _repData = { calls:[], ships:[], exps:[] };
+
+async function renderRelatorios() {
+  loading();
+  const [cr, sr, er] = await Promise.all([apiGet('/calls.php'), apiGet('/shipments.php'), apiGet('/expenses.php')]);
+  _repData.calls = cr.ok ? cr.data : [];
+  _repData.ships = sr.ok ? sr.data : [];
+  _repData.exps  = er.ok ? er.data : [];
+
+  const allItems = [..._repData.calls, ..._repData.ships, ..._repData.exps];
+  const anos = [...new Set(allItems.map(i=>(i.created_at||'').slice(0,4)).filter(Boolean))].sort().reverse();
+  const anoOpts = anos.map(a=>`<option value="${a}">${a}</option>`).join('');
+  const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const mesOpts = MESES.map((m,i)=>`<option value="${String(i+1).padStart(2,'0')}">${m}</option>`).join('');
+
+  const filterBar = (prefix, extraFilters) => `
+    <div class="card p-4 mb-4">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+        ${extraFilters}
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div>
+          <label class="form-label" style="font-size:11px">Data início</label>
+          <input type="date" id="rf_${prefix}_de" class="form-input" onchange="applyRepFilter('${prefix}')">
+        </div>
+        <div>
+          <label class="form-label" style="font-size:11px">Data fim</label>
+          <input type="date" id="rf_${prefix}_ate" class="form-input" onchange="applyRepFilter('${prefix}')">
+        </div>
+        <div>
+          <label class="form-label" style="font-size:11px">Mês</label>
+          <select id="rf_${prefix}_mes" class="form-input" onchange="applyRepFilter('${prefix}')">
+            <option value="">Todos os meses</option>${mesOpts}
+          </select>
+        </div>
+        <div>
+          <label class="form-label" style="font-size:11px">Ano</label>
+          <select id="rf_${prefix}_ano" class="form-input" onchange="applyRepFilter('${prefix}')">
+            <option value="">Todos os anos</option>${anoOpts}
+          </select>
+        </div>
+      </div>
+      <div class="flex gap-2 mt-3">
+        <button class="btn btn-outline btn-sm" onclick="clearRepFilter('${prefix}')"><i class="fas fa-times mr-1"></i>Limpar filtros</button>
+        <button class="btn btn-outline btn-sm" onclick="exportRepCSV('${prefix}')"><i class="fas fa-download mr-1"></i>Exportar CSV</button>
+      </div>
+    </div>`;
+
+  setView(`
+    <!-- TABS -->
+    <div class="flex gap-1 mb-5" style="border-bottom:2px solid var(--border)">
+      ${[
+        {id:'despesas', label:'Despesas',          icon:'fa-dollar-sign'},
+        {id:'chamados', label:'Chamados',           icon:'fa-bell'},
+        {id:'envios',   label:'Envios / Retiradas', icon:'fa-box'},
+      ].map(t=>`
+        <button id="repTab_${t.id}" onclick="switchRepTab('${t.id}')"
+          class="flex items-center gap-2 px-5 py-2 text-sm font-semibold -mb-0.5 transition-all rounded-t"
+          style="border-bottom:2px solid transparent;color:var(--text-muted)">
+          <i class="fas ${t.icon}"></i>${t.label}
+        </button>`).join('')}
+    </div>
+
+    <!-- ─── DESPESAS ─── -->
+    <div id="repPanel_despesas">
+      ${filterBar('exp', `
+        <div>
+          <label class="form-label" style="font-size:11px">Setor</label>
+          <input type="text" id="rf_exp_setor" class="form-input" placeholder="Todos" oninput="applyRepFilter('exp')">
+        </div>
+        <div>
+          <label class="form-label" style="font-size:11px">Forma de Pagamento</label>
+          <select id="rf_exp_forma" class="form-input" onchange="applyRepFilter('exp')">
+            <option value="">Todas</option>
+            <option value="dinheiro">Dinheiro</option>
+            <option value="pix">PIX</option>
+            <option value="cartao">Cartão</option>
+            <option value="transferencia">Transferência</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label" style="font-size:11px">Classificação Financeira</label>
+          <input type="text" id="rf_exp_class" class="form-input" placeholder="Todas" oninput="applyRepFilter('exp')">
+        </div>
+        <div>
+          <label class="form-label" style="font-size:11px">Status</label>
+          <select id="rf_exp_status" class="form-input" onchange="applyRepFilter('exp')">
+            <option value="">Todos</option>
+            <option value="pending">Pendente</option>
+            <option value="approved">Aprovado</option>
+            <option value="released">Liberado</option>
+            <option value="rejected">Rejeitado</option>
+          </select>
+        </div>
+      `)}
+      <div id="rep_exp_summary" class="grid grid-cols-3 gap-3 mb-4"></div>
+      <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead><tr style="background:var(--bg);border-bottom:2px solid var(--border)">
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Data</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Setor</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Beneficiário</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Referência</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Classificação</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Forma</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Valor</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Status</th>
+            </tr></thead>
+            <tbody id="rep_exp_body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── CHAMADOS ─── -->
+    <div id="repPanel_chamados" class="hidden">
+      ${filterBar('call', `
+        <div>
+          <label class="form-label" style="font-size:11px">Motorista</label>
+          <input type="text" id="rf_call_driver" class="form-input" placeholder="Todos" oninput="applyRepFilter('call')">
+        </div>
+        <div>
+          <label class="form-label" style="font-size:11px">Unidade / Origem</label>
+          <input type="text" id="rf_call_origin" class="form-input" placeholder="Todas" oninput="applyRepFilter('call')">
+        </div>
+        <div>
+          <label class="form-label" style="font-size:11px">Prioridade</label>
+          <select id="rf_call_prio" class="form-input" onchange="applyRepFilter('call')">
+            <option value="">Todas</option>
+            <option value="normal">Normal</option>
+            <option value="urgent">Urgente</option>
+            <option value="emergency">Emergência</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label" style="font-size:11px">Status</label>
+          <select id="rf_call_status" class="form-input" onchange="applyRepFilter('call')">
+            <option value="">Todos</option>
+            <option value="pending">Pendente</option>
+            <option value="in_progress">Em Andamento</option>
+            <option value="completed">Concluído</option>
+          </select>
+        </div>
+      `)}
+      <div id="rep_call_summary" class="grid grid-cols-3 gap-3 mb-4"></div>
+      <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead><tr style="background:var(--bg);border-bottom:2px solid var(--border)">
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Data/Hora</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Origem / Unidade</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Prioridade</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Motorista</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Chegada NTO</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Conclusão</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Duração</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Status</th>
+            </tr></thead>
+            <tbody id="rep_call_body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── ENVIOS ─── -->
+    <div id="repPanel_envios" class="hidden">
+      ${filterBar('ship', `
+        <div>
+          <label class="form-label" style="font-size:11px">Setor Origem</label>
+          <input type="text" id="rf_ship_setor" class="form-input" placeholder="Todos" oninput="applyRepFilter('ship')">
+        </div>
+        <div>
+          <label class="form-label" style="font-size:11px">Local Destino</label>
+          <input type="text" id="rf_ship_dest" class="form-input" placeholder="Todos" oninput="applyRepFilter('ship')">
+        </div>
+        <div>
+          <label class="form-label" style="font-size:11px">Tipo</label>
+          <select id="rf_ship_tipo" class="form-input" onchange="applyRepFilter('ship')">
+            <option value="">Todos</option>
+            <option value="send">Envio</option>
+            <option value="pickup">Retirada</option>
+          </select>
+        </div>
+        <div>
+          <label class="form-label" style="font-size:11px">Status</label>
+          <select id="rf_ship_status" class="form-input" onchange="applyRepFilter('ship')">
+            <option value="">Todos</option>
+            <option value="pending">Pendente</option>
+            <option value="in_progress">Em Andamento</option>
+            <option value="completed">Concluído</option>
+          </select>
+        </div>
+      `)}
+      <div id="rep_ship_summary" class="grid grid-cols-3 gap-3 mb-4"></div>
+      <div class="card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead><tr style="background:var(--bg);border-bottom:2px solid var(--border)">
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Data/Hora</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Setor Origem</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Destino</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Tipo</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Motorista</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Conclusão</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Duração</th>
+              <th class="px-3 py-3 text-left text-xs font-bold uppercase" style="color:var(--text-muted)">Status</th>
+            </tr></thead>
+            <tbody id="rep_ship_body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `);
+
+  switchRepTab('despesas');
+}
+
+function switchRepTab(tab) {
+  const map = { despesas:'exp', chamados:'call', envios:'ship' };
+  ['despesas','chamados','envios'].forEach(t => {
+    const panel = document.getElementById('repPanel_' + t);
+    const btn   = document.getElementById('repTab_' + t);
+    const active = t === tab;
+    if (panel) panel.classList.toggle('hidden', !active);
+    if (btn) {
+      btn.style.borderBottomColor = active ? '#1a3550' : 'transparent';
+      btn.style.color             = active ? '#1a3550' : 'var(--text-muted)';
+      btn.style.background        = active ? 'var(--card)' : 'transparent';
+    }
+  });
+  applyRepFilter(map[tab] || tab);
+}
+
+function _repDateKey(item) {
+  return item.data_solicitacao || item.created_at || '';
+}
+function _matchRepDate(dateStr, de, ate, mes, ano) {
+  if (!dateStr) return true;
+  const ds = dateStr.slice(0, 10);
+  const d  = new Date(ds + 'T00:00:00');
+  if (de  && ds < de)  return false;
+  if (ate && ds > ate) return false;
+  if (mes && String(d.getMonth() + 1).padStart(2,'0') !== mes) return false;
+  if (ano && String(d.getFullYear()) !== ano) return false;
+  return true;
+}
+function _duracao(start, end) {
+  if (!start || !end) return '—';
+  const ms = new Date(end) - new Date(start);
+  if (ms <= 0) return '—';
+  const min = Math.round(ms / 60000);
+  if (min < 60) return `${min}min`;
+  const h = Math.floor(min / 60), m = min % 60;
+  return `${h}h${m > 0 ? String(m).padStart(2,'0') : ''}`;
+}
+function _repCard(value, label, icon, color, bg) {
+  return `<div class="card p-4 flex items-center gap-3">
+    <div style="background:${bg};width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <i class="fas ${icon}" style="color:${color};font-size:16px"></i>
+    </div>
+    <div>
+      <div class="font-bold" style="color:var(--text);font-size:15px">${value}</div>
+      <div style="color:var(--text-muted);font-size:11px">${label}</div>
+    </div>
+  </div>`;
+}
+function _gv(id) { const el=document.getElementById(id); return el ? el.value : ''; }
+
+function applyRepFilter(prefix) {
+  if (prefix === 'exp' || prefix === 'despesas') {
+    const setor  = _gv('rf_exp_setor').toLowerCase();
+    const forma  = _gv('rf_exp_forma');
+    const cls    = _gv('rf_exp_class').toLowerCase();
+    const status = _gv('rf_exp_status');
+    const de     = _gv('rf_exp_de');
+    const ate    = _gv('rf_exp_ate');
+    const mes    = _gv('rf_exp_mes');
+    const ano    = _gv('rf_exp_ano');
+
+    const data = _repData.exps.filter(e =>
+      (!setor  || (e.created_by_sector||'').toLowerCase().includes(setor)) &&
+      (!forma  || e.forma_pagamento === forma) &&
+      (!cls    || (e.classificacao_fin||'').toLowerCase().includes(cls)) &&
+      (!status || e.status === status) &&
+      _matchRepDate(e.data_solicitacao || e.created_at, de, ate, mes, ano)
+    );
+
+    const total    = data.reduce((s,e)=>s+parseFloat(e.amount||0),0);
+    const liberado = data.filter(e=>e.status==='released').reduce((s,e)=>s+parseFloat(e.amount||0),0);
+    document.getElementById('rep_exp_summary').innerHTML =
+      _repCard(data.length,           'Registros',      'fa-file-alt',    '#1a3550','#e0e7ff') +
+      _repCard(fmtMoney(total),        'Total Solicitado','fa-dollar-sign', '#f59e0b','#fffbeb') +
+      _repCard(fmtMoney(liberado),     'Total Liberado',  'fa-check-circle','#10b981','#d1fae5');
+
+    document.getElementById('rep_exp_body').innerHTML = data.length === 0
+      ? `<tr><td colspan="8" class="px-3 py-6 text-center" style="color:var(--text-muted)">Nenhum resultado encontrado</td></tr>`
+      : data.map(e=>`
+        <tr style="border-bottom:1px solid var(--border)">
+          <td class="px-3 py-2 text-xs" style="color:var(--text-muted)">${fmtDateOnly(e.data_solicitacao||e.created_at)}</td>
+          <td class="px-3 py-2 font-medium" style="color:var(--text)">${escHtml(e.created_by_sector||e.created_by_name||'—')}</td>
+          <td class="px-3 py-2" style="color:var(--text)">${escHtml(e.beneficiario||'—')}</td>
+          <td class="px-3 py-2 text-xs" style="color:var(--text-muted)">${escHtml(e.description||'—')}</td>
+          <td class="px-3 py-2 text-xs" style="color:var(--text-muted)">${escHtml(e.classificacao_fin||'—')}</td>
+          <td class="px-3 py-2 text-xs" style="color:var(--text-muted)">${e.forma_pagamento||'—'}</td>
+          <td class="px-3 py-2 font-bold" style="color:var(--text)">${fmtMoney(e.amount)}</td>
+          <td class="px-3 py-2"><span class="badge badge-${badgeClass(e.status)}">${STATUS_LABELS[e.status]||e.status}</span></td>
+        </tr>`).join('');
+  }
+
+  if (prefix === 'call' || prefix === 'chamados') {
+    const driver = _gv('rf_call_driver').toLowerCase();
+    const origin = _gv('rf_call_origin').toLowerCase();
+    const prio   = _gv('rf_call_prio');
+    const status = _gv('rf_call_status');
+    const de     = _gv('rf_call_de');
+    const ate    = _gv('rf_call_ate');
+    const mes    = _gv('rf_call_mes');
+    const ano    = _gv('rf_call_ano');
+
+    const data = _repData.calls.filter(c =>
+      (!driver || (c.assigned_driver_name||'').toLowerCase().includes(driver)) &&
+      (!origin || (c.origin_name||'').toLowerCase().includes(origin)) &&
+      (!prio   || c.priority === prio) &&
+      (!status || c.status === status) &&
+      _matchRepDate(c.created_at, de, ate, mes, ano)
+    );
+
+    const completed = data.filter(c=>c.status==='completed');
+    const durs = completed
+      .map(c=>c.completed_at&&c.created_at ? (new Date(c.completed_at)-new Date(c.created_at))/60000 : null)
+      .filter(d=>d!==null && d>=0);
+    const avgMin = durs.length ? Math.round(durs.reduce((a,b)=>a+b,0)/durs.length) : null;
+    const avgStr = avgMin === null ? '—' : avgMin < 60 ? `${avgMin}min` : `${Math.floor(avgMin/60)}h${String(avgMin%60).padStart(2,'0')}`;
+
+    document.getElementById('rep_call_summary').innerHTML =
+      _repCard(data.length,      'Total Chamados', 'fa-bell',   '#1a3550','#e0e7ff') +
+      _repCard(completed.length, 'Concluídos',     'fa-check',  '#10b981','#d1fae5') +
+      _repCard(avgStr,           'Tempo Médio',    'fa-clock',  '#f59e0b','#fffbeb');
+
+    document.getElementById('rep_call_body').innerHTML = data.length === 0
+      ? `<tr><td colspan="8" class="px-3 py-6 text-center" style="color:var(--text-muted)">Nenhum resultado encontrado</td></tr>`
+      : data.map(c=>{
+          const prioBg  = {emergency:'#fee2e2',urgent:'#ffedd5',normal:'#f1f5f9'}[c.priority]||'#f1f5f9';
+          const prioClr = {emergency:'#991b1b',urgent:'#9a3412',normal:'#475569'}[c.priority]||'#475569';
+          return `<tr style="border-bottom:1px solid var(--border)">
+            <td class="px-3 py-2 text-xs" style="color:var(--text-muted)">${fmtDate(c.created_at)}</td>
+            <td class="px-3 py-2 font-medium" style="color:var(--text)">${escHtml(c.origin_name||'—')}</td>
+            <td class="px-3 py-2"><span class="badge" style="background:${prioBg};color:${prioClr}">${PRIORITY_LABELS[c.priority]||c.priority}</span></td>
+            <td class="px-3 py-2 text-xs" style="color:var(--text)">${escHtml(c.assigned_driver_name||'—')}</td>
+            <td class="px-3 py-2 text-xs" style="color:var(--text-muted)">${c.arrival_at_nto ? fmtDate(c.arrival_at_nto) : '—'}</td>
+            <td class="px-3 py-2 text-xs" style="color:var(--text-muted)">${c.completed_at ? fmtDate(c.completed_at) : '—'}</td>
+            <td class="px-3 py-2 text-xs font-mono" style="color:var(--text)">${_duracao(c.created_at,c.completed_at)}</td>
+            <td class="px-3 py-2"><span class="badge badge-${badgeClass(c.status)}">${STATUS_LABELS[c.status]||c.status}</span></td>
+          </tr>`;
+        }).join('');
+  }
+
+  if (prefix === 'ship' || prefix === 'envios') {
+    const setor  = _gv('rf_ship_setor').toLowerCase();
+    const dest   = _gv('rf_ship_dest').toLowerCase();
+    const tipo   = _gv('rf_ship_tipo');
+    const status = _gv('rf_ship_status');
+    const de     = _gv('rf_ship_de');
+    const ate    = _gv('rf_ship_ate');
+    const mes    = _gv('rf_ship_mes');
+    const ano    = _gv('rf_ship_ano');
+
+    const data = _repData.ships.filter(s =>
+      (!setor  || (s.origin_sector||'').toLowerCase().includes(setor)) &&
+      (!dest   || (s.destination_name||'').toLowerCase().includes(dest)) &&
+      (!tipo   || s.type === tipo) &&
+      (!status || s.status === status) &&
+      _matchRepDate(s.created_at, de, ate, mes, ano)
+    );
+
+    const completed = data.filter(s=>s.status==='completed');
+    const nEnvios   = data.filter(s=>s.type==='send').length;
+    const nRet      = data.filter(s=>s.type==='pickup').length;
+    document.getElementById('rep_ship_summary').innerHTML =
+      _repCard(data.length,              'Total Demandas',      'fa-box',          '#1a3550','#e0e7ff') +
+      _repCard(`${nEnvios}E / ${nRet}R`, 'Envios / Retiradas',  'fa-exchange-alt', '#7c3aed','#ede9fe') +
+      _repCard(completed.length,         'Concluídos',          'fa-check-circle', '#10b981','#d1fae5');
+
+    document.getElementById('rep_ship_body').innerHTML = data.length === 0
+      ? `<tr><td colspan="8" class="px-3 py-6 text-center" style="color:var(--text-muted)">Nenhum resultado encontrado</td></tr>`
+      : data.map(s=>`
+        <tr style="border-bottom:1px solid var(--border)">
+          <td class="px-3 py-2 text-xs" style="color:var(--text-muted)">${fmtDate(s.created_at)}</td>
+          <td class="px-3 py-2 font-medium" style="color:var(--text)">${escHtml(s.origin_sector||'—')}</td>
+          <td class="px-3 py-2" style="color:var(--text)">${escHtml(s.destination_name||'—')}</td>
+          <td class="px-3 py-2"><span class="badge ${s.type==='send'?'badge-progress':'badge-completed'}">${s.type==='send'?'Envio':'Retirada'}</span></td>
+          <td class="px-3 py-2 text-xs" style="color:var(--text)">${escHtml(s.assigned_driver_name||'—')}</td>
+          <td class="px-3 py-2 text-xs" style="color:var(--text-muted)">${s.completed_at ? fmtDate(s.completed_at) : '—'}</td>
+          <td class="px-3 py-2 text-xs font-mono" style="color:var(--text)">${_duracao(s.created_at,s.completed_at)}</td>
+          <td class="px-3 py-2"><span class="badge badge-${badgeClass(s.status)}">${STATUS_LABELS[s.status]||s.status}</span></td>
+        </tr>`).join('');
+  }
+}
+
+function clearRepFilter(prefix) {
+  const ids = {
+    exp:  ['rf_exp_setor','rf_exp_forma','rf_exp_class','rf_exp_status','rf_exp_de','rf_exp_ate','rf_exp_mes','rf_exp_ano'],
+    call: ['rf_call_driver','rf_call_origin','rf_call_prio','rf_call_status','rf_call_de','rf_call_ate','rf_call_mes','rf_call_ano'],
+    ship: ['rf_ship_setor','rf_ship_dest','rf_ship_tipo','rf_ship_status','rf_ship_de','rf_ship_ate','rf_ship_mes','rf_ship_ano'],
+  };
+  (ids[prefix]||[]).forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  applyRepFilter(prefix);
+}
+
+function exportRepCSV(prefix) {
+  let headers=[], rows=[];
+  if (prefix === 'exp') {
+    headers = ['Data','Setor','Beneficiário','Referência','Classificação','Forma Pagamento','Valor (R$)','Status'];
+    rows = _repData.exps.map(e=>[
+      fmtDateOnly(e.data_solicitacao||e.created_at),
+      e.created_by_sector||e.created_by_name||'',
+      e.beneficiario||'', e.description||'',
+      e.classificacao_fin||'', e.forma_pagamento||'',
+      parseFloat(e.amount||0).toFixed(2),
+      STATUS_LABELS[e.status]||e.status,
+    ]);
+  } else if (prefix === 'call') {
+    headers = ['Data/Hora','Origem / Unidade','Prioridade','Motorista','Chegada NTO','Conclusão','Duração','Status'];
+    rows = _repData.calls.map(c=>[
+      fmtDate(c.created_at), c.origin_name||'',
+      PRIORITY_LABELS[c.priority]||c.priority||'',
+      c.assigned_driver_name||'',
+      c.arrival_at_nto ? fmtDate(c.arrival_at_nto) : '',
+      c.completed_at   ? fmtDate(c.completed_at)   : '',
+      _duracao(c.created_at,c.completed_at),
+      STATUS_LABELS[c.status]||c.status,
+    ]);
+  } else {
+    headers = ['Data/Hora','Setor Origem','Destino','Tipo','Motorista','Conclusão','Duração','Status'];
+    rows = _repData.ships.map(s=>[
+      fmtDate(s.created_at), s.origin_sector||'', s.destination_name||'',
+      s.type==='send'?'Envio':'Retirada',
+      s.assigned_driver_name||'',
+      s.completed_at ? fmtDate(s.completed_at) : '',
+      _duracao(s.created_at,s.completed_at),
+      STATUS_LABELS[s.status]||s.status,
+    ]);
+  }
+  const csv = [headers,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement('a'),{href:url,download:`relatorio_${prefix}_${today()}.csv`});
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ================================================
+// LOCAIS
+// ================================================
+const LOC_TYPES = [
+  { id:'emergency_unit',  label:'Unidades de Emergência', icon:'fa-hospital',    color:'#ef4444', bg:'#fee2e2' },
+  { id:'internal_sector', label:'Setores Internos',       icon:'fa-building',    color:'#6366f1', bg:'#e0e7ff' },
+  { id:'pickup_point',    label:'Locais de Retirada',     icon:'fa-map-marker-alt', color:'#10b981', bg:'#d1fae5' },
+];
+
+function renderLocaisHTML() {
+  const byType = type => state.locations.filter(l => l.type === type);
+  const section = (t) => {
+    const items = byType(t.id);
+    return `
+    <div class="card p-5 mb-5">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <div style="width:38px;height:38px;border-radius:10px;background:${t.bg};display:flex;align-items:center;justify-content:center">
+            <i class="fas ${t.icon}" style="color:${t.color};font-size:16px"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-gray-800" style="color:var(--text)">${t.label}</h3>
+            <p class="text-xs" style="color:var(--text-muted)">${items.length} cadastrado(s)</p>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openLocaisForm('${t.id}','${escHtml(t.label)}')">
+          <i class="fas fa-plus"></i> Adicionar
+        </button>
+      </div>
+      ${items.length === 0
+        ? `<p class="text-sm text-center py-4" style="color:var(--text-muted)">Nenhum local cadastrado</p>`
+        : `<div class="space-y-2">
+            ${items.map(loc => `
+              <div class="flex items-center justify-between px-3 py-2 rounded-xl" style="background:var(--bg);border:1px solid var(--border)">
+                <div>
+                  <span class="font-semibold text-sm" style="color:var(--text)">${escHtml(loc.name)}</span>
+                  ${loc.address ? `<span class="ml-2 text-xs" style="color:var(--text-muted)"><i class="fas fa-map-pin mr-1"></i>${escHtml(loc.address)}</span>` : ''}
+                  ${loc.contact ? `<span class="ml-2 text-xs" style="color:var(--text-muted)"><i class="fas fa-phone mr-1"></i>${escHtml(loc.contact)}</span>` : ''}
+                </div>
+                <button class="btn btn-danger btn-sm" onclick="deleteLocal('${loc.id}','${escHtml(loc.name)}')">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>`).join('')}
+           </div>`}
+    </div>`;
+  };
+  setView(`<div>${LOC_TYPES.map(section).join('')}</div>`);
+}
+
+async function renderLocais() {
+  loading();
+  const r = await apiGet('/locations.php');
+  if (!r.ok) { setView('<p class="text-red-500">Erro ao carregar locais.</p>'); return; }
+  state.locations = r.data;
+  renderLocaisHTML();
+}
+
+function openLocaisForm(type, label) {
+  openModal(`
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-lg text-gray-800">Adicionar: ${escHtml(label)}</h3>
+        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+      </div>
+      <input type="hidden" id="locType" value="${escHtml(type)}">
+      <div class="form-group">
+        <label class="form-label">Nome *</label>
+        <input type="text" id="locName" class="form-input" placeholder="Ex: UPA Norte">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Endereço <span class="text-gray-400 font-normal">(opcional)</span></label>
+        <input type="text" id="locAddress" class="form-input" placeholder="Rua, número, bairro...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contato <span class="text-gray-400 font-normal">(opcional)</span></label>
+        <input type="text" id="locContact" class="form-input" placeholder="Telefone ou e-mail">
+      </div>
+      <div class="flex gap-3 mt-4">
+        <button class="btn btn-outline flex-1" style="justify-content:center" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary flex-1" style="justify-content:center" onclick="submitLocal()">
+          <i class="fas fa-save"></i> Salvar
+        </button>
+      </div>
+    </div>`);
+}
+
+async function submitLocal() {
+  const name    = document.getElementById('locName').value.trim();
+  const type    = document.getElementById('locType').value;
+  const address = document.getElementById('locAddress').value.trim() || null;
+  const contact = document.getElementById('locContact').value.trim() || null;
+  if (!name) { alert('Informe o nome do local.'); return; }
+  const r = await apiPost('/locations.php', { name, type, address, contact });
+  if (!r.ok) { alert(r.data.detail || 'Erro ao salvar local'); return; }
+  closeModal();
+  await renderLocais();
+}
+
+async function deleteLocal(id, name) {
+  if (!confirm(`Remover o local "${name}"?`)) return;
+  const r = await api(`/locations.php?id=${id}`, { method:'DELETE' });
+  if (!r.ok) { alert(r.data.detail || 'Erro ao remover'); return; }
+  state.locations = state.locations.filter(l => l.id !== id);
+  renderLocaisHTML();
+}
+
+// ================================================
+// USUÁRIOS
+// ================================================
+async function renderUsuarios() {
+  loading();
+  const r = await apiGet('/users.php');
+  if (!r.ok) { setView('<p class="text-red-500">Erro ao carregar usuários.</p>'); return; }
+  const users = r.data;
+
+  setView(`
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-bold text-gray-700">${users.length} usuário(s)</h3>
+      <button class="btn btn-primary btn-sm" onclick="openUserForm()"><i class="fas fa-plus"></i> Novo Usuário</button>
+    </div>
+    <div class="card overflow-hidden">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 border-b">
+          <tr class="text-left text-gray-400 text-xs uppercase">
+            <th class="px-4 py-3">Nome</th><th class="px-4 py-3">E-mail</th>
+            <th class="px-4 py-3">Perfil</th><th class="px-4 py-3">Status</th><th class="px-4 py-3">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${users.map(u=>`
+            <tr class="border-b hover:bg-gray-50">
+              <td class="px-4 py-3 font-semibold text-gray-800">${escHtml(u.name)}</td>
+              <td class="px-4 py-3 text-gray-500">${escHtml(u.email)}</td>
+              <td class="px-4 py-3"><span class="badge" style="background:#e0e7ff;color:#3730a3">${ROLE_LABELS[u.role]||u.role}</span></td>
+              <td class="px-4 py-3"><span class="badge ${u.is_active?'badge-progress':'badge-rejected'}">${u.is_active?'Ativo':'Inativo'}</span></td>
+              <td class="px-4 py-3">
+                <button class="btn btn-outline btn-sm" onclick="toggleUser('${u.id}','${escHtml(u.name)}',${u.is_active})">
+                  ${u.is_active?'Desativar':'Ativar'}
+                </button>
+              </td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`);
+}
+
+function openUserForm() {
+  openModal(`
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-lg text-gray-800">Novo Usuário</h3>
+        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nome Completo</label>
+        <input type="text" id="uName" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label">E-mail</label>
+        <input type="email" id="uEmail" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Senha</label>
+        <input type="password" id="uPassword" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Perfil</label>
+        <select id="uRole" class="form-input">
+          ${Object.entries(ROLE_LABELS).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}
+        </select>
+      </div>
+      <div class="flex gap-3 mt-4">
+        <button class="btn btn-outline flex-1" style="justify-content:center" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary flex-1" style="justify-content:center" onclick="submitUser()">Cadastrar</button>
+      </div>
+    </div>`);
+}
+
+async function submitUser() {
+  const name=document.getElementById('uName').value.trim(), email=document.getElementById('uEmail').value.trim();
+  const password=document.getElementById('uPassword').value, role=document.getElementById('uRole').value;
+  if (!name||!email||!password) { alert('Preencha todos os campos.'); return; }
+  const r = await apiPost('/auth.php?action=register', {name,email,password,role});
+  if (!r.ok) { alert(r.data.detail||'Erro ao criar usuário'); return; }
+  closeModal(); renderUsuarios();
+}
+async function toggleUser(id, name, isActive) {
+  if (!confirm(`${isActive?'Desativar':'Ativar'} o usuário ${name}?`)) return;
+  const r = await apiPut(`/users.php?id=${id}`, {});
+  if (!r.ok) { alert(r.data.detail||'Erro'); return; }
+  renderUsuarios();
+}
+
+// ================================================
+// MODAL
+// ================================================
+function openModal(content, large=false) {
+  document.getElementById('modalContainer').innerHTML = `
+    <div class="modal-backdrop" onclick="backdropClose(event)">
+      <div class="modal ${large?'modal-lg':''}">${content}</div>
+    </div>`;
+}
+function closeModal() { document.getElementById('modalContainer').innerHTML = ''; }
+function backdropClose(e) { if (e.target.classList.contains('modal-backdrop')) closeModal(); }
+
+// ================================================
+// HELPERS
+// ================================================
+function escHtml(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmtDate(dt) {
+  if (!dt) return '-';
+  // MySQL retorna "2026-03-27 14:30:00" (horário de Brasília após fix do config.php).
+  // Anexamos -03:00 para que qualquer navegador/SO interprete corretamente,
+  // independente do fuso configurado na máquina do cliente.
+  const s = String(dt).replace(' ', 'T');
+  const aware = (s.includes('+') || s.includes('Z')) ? s : s + '-03:00';
+  return new Date(aware).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+function fmtDateOnly(dt) {
+  if (!dt) return '-';
+  const raw = String(dt);
+  const s = raw.length === 10 ? raw + 'T00:00:00-03:00' : raw.replace(' ','T') + (raw.includes('+') || raw.includes('Z') ? '' : '-03:00');
+  return new Date(s).toLocaleDateString('pt-BR');
+}
+function fmtMoney(v) {
+  return 'R$ ' + parseFloat(v||0).toFixed(2).replace('.',',').replace(/\B(?=(\d{3})+(?!\d))/g,'.');
+}
+function today() {
+  const d = new Date();
+  return [d.getFullYear(), String(d.getMonth()+1).padStart(2,'0'), String(d.getDate()).padStart(2,'0')].join('-');
+}
+
+function openSidebar() {
+  document.querySelector('.sidebar').classList.add('open');
+  document.getElementById('sidebarOverlay').classList.add('show');
+}
+function closeSidebar() {
+  document.querySelector('.sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+}
+function badgeClass(s) {
+  return {pending:'pending',in_progress:'progress',completed:'completed',approved:'approved',rejected:'rejected',released:'released',cancelled:'completed'}[s]||'pending';
+}
+
+// ================================================
+// INIT
+// ================================================
+(function init() {
+  const token = localStorage.getItem('nto_token');
+  const user  = localStorage.getItem('nto_user');
+  if (token && user) {
+    try { state.token=token; state.user=JSON.parse(user); enterApp(); return; } catch(e) {}
+  }
+  document.getElementById('loginPage').classList.remove('hidden');
+})();
+</script>
+</body>
+</html>
