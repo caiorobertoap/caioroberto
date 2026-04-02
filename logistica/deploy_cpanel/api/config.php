@@ -6,17 +6,17 @@
 
 // ========== CONFIGURAÇÕES DO BANCO ==========
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'NOME_DO_SEU_BANCO');    // Altere aqui
-define('DB_USER', 'SEU_USUARIO');          // Altere aqui
-define('DB_PASS', 'SUA_SENHA');            // Altere aqui
+define('DB_NAME', 'labmed57_nto_logistics');    // Altere aqui
+define('DB_USER', 'labmed57_colab_user');          // Altere aqui
+define('DB_PASS', 'Med@14315');            // Altere aqui
 
 // ========== CONFIGURAÇÕES DE E-MAIL (SMTP) ==========
 define('MAIL_FROM',      'noreply@labmedclin.med.br'); // E-mail remetente (deve existir no servidor)
 define('MAIL_FROM_NAME', 'NTO Logística Medclin');     // Nome exibido como remetente
 define('SMTP_HOST',      'mail.labmedclin.med.br');    // Servidor SMTP
 define('SMTP_PORT',      587);                          // Porta SMTP (587 = STARTTLS)
-define('SMTP_USER',      'SEU_EMAIL@labmedclin.med.br'); // Usuário SMTP — altere aqui
-define('SMTP_PASS',      'SUA_SENHA_EMAIL');             // Senha SMTP    — altere aqui
+define('SMTP_USER',      'labmed57'); // Usuário SMTP — altere aqui
+define('SMTP_PASS',      'Itgp@M745451');             // Senha SMTP    — altere aqui
 
 // ========== CONFIGURAÇÕES JWT ==========
 define('JWT_SECRET', 'nto-logistics-chave-secreta-2024');

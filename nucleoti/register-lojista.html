@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro Lojista - Nosso Nucleo Design</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-box">
+            <div class="logo-container">
+                <img src="assets/images/logo.png" alt="Nosso Nucleo Design" class="logo" onerror="this.style.display='none'">
+            </div>
+            <h1>Cadastro Lojista</h1>
+            <p class="subtitle">Preencha seus dados para comecar</p>
+            <div id="registerMessage" class="hidden"></div>
+            <form id="registerForm" data-testid="register-lojista-form">
+                <div class="form-group">
+                    <label for="name">Nome da Loja *</label>
+                    <input type="text" id="name" required data-testid="lojista-name">
+                </div>
+                <div class="form-group">
+                    <label for="cnpj">CNPJ *</label>
+                    <input type="text" id="cnpj" placeholder="00.000.000/0000-00" required data-testid="lojista-cnpj">
+                </div>
+                <div class="form-group">
+                    <label for="responsible">Responsavel *</label>
+                    <input type="text" id="responsible" required data-testid="lojista-responsible">
+                </div>
+                <div class="form-group">
+                    <label for="phone">WhatsApp *</label>
+                    <input type="tel" id="phone" placeholder="(00) 00000-0000" required data-testid="lojista-phone">
+                </div>
+                <div class="form-group">
+                    <label for="address">Endereco *</label>
+                    <input type="text" id="address" required data-testid="lojista-address">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input type="email" id="email" placeholder="loja@email.com" required data-testid="lojista-email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha *</label>
+                    <input type="password" id="password" minlength="6" required data-testid="lojista-password">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirmar Senha *</label>
+                    <input type="password" id="confirmPassword" minlength="6" required data-testid="lojista-confirm-password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="registerBtn" data-testid="lojista-submit">Cadastrar</button>
+            </form>
+            <div class="links">
+                <a href="index.html" class="link">Ja tem uma conta? <strong>Entrar</strong></a>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const messageDiv = document.getElementById('registerMessage');
+            const registerBtn = document.getElementById('registerBtn');
+            
+            messageDiv.className = 'hidden';
+            
+            if (password !== confirmPassword) {
+                messageDiv.className = 'alert alert-error';
+                messageDiv.textContent = 'As senhas nao coincidem';
+                return;
+            }
+            
+            registerBtn.disabled = true;
+            registerBtn.textContent = 'Cadastrando...';
+            
+            try {
+                await API.auth.registerLojista({
+                    name: document.getElementById('name').value,
+                    cnpj: document.getElementById('cnpj').value,
+                    responsible: document.getElementById('responsible').value,
+                    phone: document.getElementById('phone').value,
+                    address: document.getElementById('address').value,
+                    email: document.getElementById('email').value,
+                    password: password
+                });
+                
+                messageDiv.className = 'alert alert-success';
+                messageDiv.textContent = 'Cadastro realizado com sucesso! Redirecionando...';
+                
+                setTimeout(async () => {
+                    const email = document.getElementById('email').value;
+                    const user = await API.auth.login(email, password);
+                    setCurrentUser(user);
+                    redirectToDashboard(user);
+                }, 1500);
+            } catch (error) {
+                messageDiv.className = 'alert alert-error';
+                messageDiv.textContent = error.message || 'Erro ao cadastrar';
+                registerBtn.disabled = false;
+                registerBtn.textContent = 'Cadastrar';
+            }
+        });
+    </script>
+</body>
+</html>

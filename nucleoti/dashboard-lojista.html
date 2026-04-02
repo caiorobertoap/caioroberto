@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Lojista - Nosso Núcleo Design</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">
+            <h1>Painel Lojista</h1>
+            <p>Olá, <span id="userName"></span></p>
+        </div>
+        <div class="header-actions">
+            <button onclick="logout()" class="btn btn-sm btn-secondary">Sair</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Pontos Distribuídos</div>
+                <div class="stat-value" id="statPontosDistribuidos">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Arquitetos Atendidos</div>
+                <div class="stat-value" id="statArquitetosAtendidos">0</div>
+            </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+            <button onclick="openModal('pointsModal')" class="btn btn-primary">+ Inserir Pontos</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="card">
+            <div style="border-bottom: 1px solid var(--color-border); margin-bottom: 24px;">
+                <button class="tab-btn active" onclick="switchTab('ranking')">Ranking Arquitetos</button>
+                <button class="tab-btn" onclick="switchTab('historico')">Meu Histórico</button>
+            </div>
+
+            <!-- Tab: Ranking -->
+            <div id="tab-ranking" class="tab-content active">
+                <h3 class="mb-3">Ranking de Arquitetos na Campanha</h3>
+                <p class="text-muted mb-3">Ranking geral sem identificar lojas específicas</p>
+                <div id="rankingArquitetos"></div>
+            </div>
+
+            <!-- Tab: Histórico -->
+            <div id="tab-historico" class="tab-content">
+                <h3 class="mb-3">Histórico de Pontos Inseridos</h3>
+                <div id="historicoContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Inserir Pontos -->
+    <div id="pointsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Inserir Pontos na Minha Loja</h2>
+            </div>
+            <form id="pointsForm">
+                <div class="form-group">
+                    <label>Arquiteto *</label>
+                    <select id="pointsArquiteto" required>
+                        <option value="">Selecione o arquiteto...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Pontos *</label>
+                    <input type="number" id="pointsValue" min="1" placeholder="Ex: 500" required>
+                </div>
+                <div class="form-group">
+                    <label>Data</label>
+                    <input type="date" id="pointsDate">
+                </div>
+                <div class="alert alert-info">
+                    <small>
+                        <strong>Importante:</strong> Os pontos serão automaticamente vinculados à sua loja.
+                        Se o arquiteto faz parte de um escritório, o escritório também receberá os pontos.
+                    </small>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Confirmar Pontos</button>
+                <button type="button" onclick="closeModal('pointsModal')" class="btn btn-secondary btn-full mt-2">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>
+        const user = requireAuth('lojista');
+        if (user) {
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('pointsDate').value = new Date().toISOString().split('T')[0];
+            loadDashboard();
+        }
+
+        async function loadDashboard() {
+            await Promise.all([
+                loadDetails(),
+                loadRanking(),
+                loadArquitetosSelect()
+            ]);
+        }
+
+        async function loadDetails() {
+            try {
+                const details = await API.auth.myDetails();
+                
+                document.getElementById('statPontosDistribuidos').textContent = 
+                    formatCurrency(details.pontos_distribuidos || 0);
+                document.getElementById('statArquitetosAtendidos').textContent = 
+                    details.arquitetos_atendidos || 0;
+
+                // Carregar histórico
+                if (details.historico_pontos) {
+                    const historicoHTML = details.historico_pontos.map(item => `
+                        <div class="ranking-item">
+                            <div class="ranking-info">
+                                <div class="ranking-name">${item.arquiteto_nome}</div>
+                                <div class="ranking-detail">
+                                    ${formatDate(item.transaction_date)}
+                                    ${item.campanha_nome ? `• ${item.campanha_nome}` : ''}
+                                </div>
+                            </div>
+                            <span class="badge">${formatCurrency(item.points)} pts</span>
+                        </div>
+                    `).join('');
+                    
+                    document.getElementById('historicoContent').innerHTML = historicoHTML || 
+                        '<p class="text-muted">Nenhum ponto inserido ainda</p>';
+                }
+            } catch (error) {
+                console.error('Erro ao carregar detalhes:', error);
+            }
+        }
+
+        async function loadRanking() {
+            try {
+                const details = await API.auth.myDetails();
+                
+                if (details.ranking_arquitetos_campanha) {
+                    const rankingHTML = details.ranking_arquitetos_campanha.map((arq, i) => `
+                        <div class="ranking-item">
+                            <div class="flex" style="align-items: center; gap: 16px;">
+                                <span class="ranking-position">${i + 1}º</span>
+                                <div class="ranking-name">${arq.name}</div>
+                            </div>
+                            <span class="badge">${formatCurrency(arq.pontos_campanha || 0)} pts</span>
+                        </div>
+                    `).join('');
+                    
+                    document.getElementById('rankingArquitetos').innerHTML = rankingHTML ||
+                        '<p class="text-muted">Nenhum dado disponível</p>';
+                } else {
+                    // Fallback para ranking geral
+                    const ranking = await API.rankings.arquitetos();
+                    const rankingHTML = ranking.map((arq, i) => `
+                        <div class="ranking-item">
+                            <div class="flex" style="align-items: center; gap: 16px;">
+                                <span class="ranking-position">${i + 1}º</span>
+                                <div class="ranking-name">${arq.name}</div>
+                            </div>
+                            <span class="badge">${formatCurrency(arq.total_points)} pts</span>
+                        </div>
+                    `).join('');
+                    
+                    document.getElementById('rankingArquitetos').innerHTML = rankingHTML;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar ranking:', error);
+            }
+        }
+
+        async function loadArquitetosSelect() {
+            try {
+                const arquitetos = await API.users.arquitetos();
+                const select = document.getElementById('pointsArquiteto');
+                select.innerHTML = '<option value="">Selecione o arquiteto...</option>' +
+                    arquitetos.map(arq => `<option value="${arq.id}">${arq.name}</option>`).join('');
+            } catch (error) {
+                console.error('Erro ao carregar arquitetos:', error);
+            }
+        }
+
+        document.getElementById('pointsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.disabled = true;
+            btn.textContent = 'Inserindo...';
+            
+            try {
+                await API.points.create({
+                    arquiteto_id: document.getElementById('pointsArquiteto').value,
+                    lojista_id: user.id,
+                    points: parseInt(document.getElementById('pointsValue').value),
+                    transaction_date: document.getElementById('pointsDate').value
+                });
+                
+                closeModal('pointsModal');
+                e.target.reset();
+                document.getElementById('pointsDate').value = new Date().toISOString().split('T')[0];
+                showSuccess('Pontos inseridos com sucesso!');
+                loadDashboard();
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Confirmar Pontos';
+            }
+        });
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+    </script>
+
+    <style>
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover {
+            color: var(--color-text);
+        }
+        .tab-btn.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-accent);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</body>
+</html>

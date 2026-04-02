@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Arquiteto - Nosso Núcleo Design</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">
+            <h1>Painel Arquiteto</h1>
+            <p>Olá, <span id="userName"></span></p>
+        </div>
+        <div class="header-actions">
+            <button onclick="logout()" class="btn btn-sm btn-secondary">Sair</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Meus Pontos</div>
+                <div class="stat-value" id="statMeusPontos">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Lojas Pontuadas</div>
+                <div class="stat-value" id="statLojasPontuadas">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Meu Escritório</div>
+                <div class="stat-value" style="font-size: 1.2rem;" id="statEscritorio">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Posição no Ranking</div>
+                <div class="stat-value" id="statPosicao">-</div>
+            </div>
+        </div>
+
+        <!-- Escritório Card -->
+        <div class="card" id="escritorioCard" style="display: none;">
+            <h3 class="mb-3">Meu Escritório</h3>
+            <div id="escritorioInfo"></div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="card">
+            <div style="border-bottom: 1px solid var(--color-border); margin-bottom: 24px;">
+                <button class="tab-btn active" onclick="switchTab('lojas')">Pontos por Loja</button>
+                <button class="tab-btn" onclick="switchTab('campanhas')">Por Campanha</button>
+            </div>
+
+            <!-- Tab: Lojas -->
+            <div id="tab-lojas" class="tab-content active">
+                <h3 class="mb-3">Pontos Acumulados por Loja</h3>
+                <div id="pontosLojasContent"></div>
+            </div>
+
+            <!-- Tab: Campanhas -->
+            <div id="tab-campanhas" class="tab-content">
+                <h3 class="mb-3">Desempenho por Campanha</h3>
+                <div id="campanhasContent"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>
+        const user = requireAuth('arquiteto');
+        if (user) {
+            document.getElementById('userName').textContent = user.name;
+            loadDashboard();
+        }
+
+        async function loadDashboard() {
+            await loadDetails();
+        }
+
+        async function loadDetails() {
+            try {
+                const details = await API.auth.myDetails();
+                
+                // Stats
+                document.getElementById('statMeusPontos').textContent = 
+                    formatCurrency(details.pontos_total || 0);
+                
+                const numLojas = details.pontos_por_loja ? details.pontos_por_loja.length : 0;
+                document.getElementById('statLojasPontuadas').textContent = numLojas;
+                
+                // Escritório
+                if (details.escritorio) {
+                    document.getElementById('statEscritorio').textContent = details.escritorio.name;
+                    document.getElementById('statEscritorio').style.fontSize = '1.2rem';
+                    
+                    document.getElementById('escritorioCard').style.display = 'block';
+                    document.getElementById('escritorioInfo').innerHTML = `
+                        <div class="ranking-item">
+                            <div class="ranking-info">
+                                <div class="ranking-name">${details.escritorio.name}</div>
+                                <div class="ranking-detail">
+                                    ${details.escritorio.cnpj ? `CNPJ: ${details.escritorio.cnpj}` : ''}
+                                    ${details.escritorio.address ? `<br>${details.escritorio.address}` : ''}
+                                </div>
+                            </div>
+                            <span class="badge badge-success">${formatCurrency(details.escritorio.pontos_total || 0)} pts</span>
+                        </div>
+                    `;
+                }
+                
+                // Posição no ranking
+                if (details.posicao_ranking) {
+                    document.getElementById('statPosicao').textContent = 
+                        `${details.posicao_ranking}º / ${details.total_arquitetos}`;
+                }
+                
+                // Pontos por loja
+                if (details.pontos_por_loja && details.pontos_por_loja.length > 0) {
+                    const lojasHTML = details.pontos_por_loja.map(loja => `
+                        <div class="ranking-item">
+                            <div class="ranking-info">
+                                <div class="ranking-name">${loja.loja_nome}</div>
+                                <div class="ranking-detail">
+                                    ${loja.num_transacoes} transação(ões) • 
+                                    Primeira: ${formatDate(loja.primeira_transacao)} • 
+                                    Última: ${formatDate(loja.ultima_transacao)}
+                                </div>
+                            </div>
+                            <span class="badge">${formatCurrency(loja.pontos)} pts</span>
+                        </div>
+                    `).join('');
+                    
+                    document.getElementById('pontosLojasContent').innerHTML = lojasHTML;
+                } else {
+                    document.getElementById('pontosLojasContent').innerHTML = 
+                        '<p class="text-muted">Nenhuma pontuação registrada ainda</p>';
+                }
+                
+                // Pontos por campanha
+                if (details.pontos_por_campanha && details.pontos_por_campanha.length > 0) {
+                    const campanhasHTML = details.pontos_por_campanha.map(camp => `
+                        <div class="ranking-item">
+                            <div class="ranking-info">
+                                <div class="ranking-name">
+                                    ${camp.campanha_nome}
+                                    ${camp.active ? '<span class="badge badge-success" style="font-size:0.7rem;margin-left:8px;">Ativa</span>' : ''}
+                                </div>
+                                <div class="ranking-detail">
+                                    ${formatDate(camp.start_date)} até ${formatDate(camp.end_date)} &bull;
+                                    ${camp.lojas_pontuadas} loja(s) pontuada(s)
+                                    ${camp.posicao_ranking ? ` &bull; Posição: <strong>${camp.posicao_ranking}º de ${camp.total_arquitetos}</strong>` : ''}
+                                </div>
+                                ${(camp.premio_primeiro || camp.premio_segundo || camp.premio_terceiro) ? `
+                                <div class="ranking-detail" style="margin-top:4px;color:#B45309;">
+                                    Premiações:
+                                    ${camp.premio_primeiro ? `1º: ${camp.premio_primeiro}` : ''}
+                                    ${camp.premio_segundo ? ` | 2º: ${camp.premio_segundo}` : ''}
+                                    ${camp.premio_terceiro ? ` | 3º: ${camp.premio_terceiro}` : ''}
+                                </div>` : ''}
+                            </div>
+                            <span class="badge">${formatCurrency(camp.pontos)} pts</span>
+                        </div>
+                    `).join('');
+
+                    document.getElementById('campanhasContent').innerHTML = campanhasHTML;
+                } else {
+                    document.getElementById('campanhasContent').innerHTML =
+                        '<p class="text-muted">Nenhuma campanha com pontuação</p>';
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar detalhes:', error);
+                showError('Erro ao carregar seus dados');
+            }
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+    </script>
+
+    <style>
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover {
+            color: var(--color-text);
+        }
+        .tab-btn.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-accent);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .ml-2 {
+            margin-left: 8px;
+        }
+    </style>
+</body>
+</html>

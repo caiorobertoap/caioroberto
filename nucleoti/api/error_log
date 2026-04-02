@@ -1,0 +1,160 @@
+[30-Mar-2026 01:53:03 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 01:53:10 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 01:53:11 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:22 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:23 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:31 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:34 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:35 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:35 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:36 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:36 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:37 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:37 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:38 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:41 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:42 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:43 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:43 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:43 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:44 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:46 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:02:47 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:08:00 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:08:02 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:08:03 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:08:03 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:16:19 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:16:20 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:28:58 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 02:29:07 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 03:03:57 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34
+[30-Mar-2026 03:04:05 America/Fortaleza] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000]: General error: 1111 Invalid use of group function in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php:34
+Stack trace:
+#0 /home2/labmed57/public_html/nucleo/api/campaign_analysis.php(34): PDO->prepare('\n    SELECT \n  ...')
+#1 {main}
+  thrown in /home2/labmed57/public_html/nucleo/api/campaign_analysis.php on line 34

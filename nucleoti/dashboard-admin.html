@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Nosso Núcleo Design</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">
+            <h1>Painel Administrativo</h1>
+            <p>Olá, <span id="userName"></span></p>
+        </div>
+        <div class="header-actions">
+            <button onclick="checkBirthdays()" class="btn btn-sm btn-accent">Verificar Aniversários</button>
+            <button onclick="logout()" class="btn btn-sm btn-secondary">Sair</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Stats -->
+        <div class="stats-grid" id="statsGrid">
+            <!-- Carregado via JS -->
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+            <button onclick="openModal('officeModal')" class="btn btn-accent">+ Novo Escritório</button>
+            <button onclick="openModal('campaignModal')" class="btn btn-primary">+ Nova Campanha</button>
+            <button onclick="openModal('pointsModal')" class="btn btn-accent">Inserir Pontos</button>
+            <button onclick="switchTab('analysis');loadCampaignAnalysis()" class="btn btn-secondary">Análise de Campanhas</button>
+            <button onclick="openModal('logoModal')" class="btn btn-secondary">Configurar Logo</button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="card">
+            <div style="border-bottom: 1px solid var(--color-border); margin-bottom: 24px;">
+                <button class="tab-btn active" onclick="switchTab('rankings')">Rankings</button>
+                <button class="tab-btn" onclick="switchTab('campaigns')">Campanhas</button>
+                <button class="tab-btn" onclick="switchTab('analysis')">Análise</button>
+                <button class="tab-btn" onclick="switchTab('reports');loadReportFilters()">Relatórios</button>
+            </div>
+
+            <!-- Tab: Rankings -->
+            <div id="tab-rankings" class="tab-content active">
+                <h3 class="mb-3">Ranking de Arquitetos</h3>
+                <div id="rankingArquitetos"></div>
+
+                <h3 class="mt-4 mb-3">Ranking de Lojistas</h3>
+                <div id="rankingLojistas"></div>
+
+                <h3 class="mt-4 mb-3">Ranking de Escritórios</h3>
+                <div id="rankingEscritorios"></div>
+            </div>
+
+            <!-- Tab: Campanhas -->
+            <div id="tab-campaigns" class="tab-content">
+                <h3 class="mb-3">Campanhas</h3>
+                <div id="campaignsList"></div>
+            </div>
+
+            <!-- Tab: Análise -->
+            <div id="tab-analysis" class="tab-content">
+                <div id="analysisContent">
+                    <p class="text-muted">Selecione "Análise de Campanhas" para ver detalhes</p>
+                </div>
+            </div>
+
+            <!-- Tab: Relatórios -->
+            <div id="tab-reports" class="tab-content">
+                <h3 class="mb-3">Relatórios</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 16px;">
+                    <div class="form-group" style="margin:0">
+                        <label>Mês/Ano</label>
+                        <input type="month" id="filterMonth">
+                    </div>
+                    <div class="form-group" style="margin:0">
+                        <label>Apenas Ano</label>
+                        <input type="number" id="filterYear" placeholder="Ex: 2024" min="2020" max="2035">
+                    </div>
+                    <div class="form-group" style="margin:0">
+                        <label>Campanha</label>
+                        <select id="filterCampaign"><option value="">Todas</option></select>
+                    </div>
+                    <div class="form-group" style="margin:0">
+                        <label>Loja</label>
+                        <select id="filterLoja"><option value="">Todas</option></select>
+                    </div>
+                    <div class="form-group" style="margin:0">
+                        <label>Escritório</label>
+                        <select id="filterEscritorio"><option value="">Todos</option></select>
+                    </div>
+                </div>
+                <button onclick="applyReportFilters()" class="btn btn-primary" style="margin-bottom:24px;">Aplicar Filtros</button>
+                <div id="reportResults">
+                    <p class="text-muted">Clique em "Aplicar Filtros" para gerar o relatório</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Novo Escritório -->
+    <div id="officeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Novo Escritório</h2>
+            </div>
+            <form id="officeForm">
+                <div class="form-group">
+                    <label>Nome do Escritório *</label>
+                    <input type="text" id="officeName" required>
+                </div>
+                <div class="form-group">
+                    <label>CNPJ</label>
+                    <input type="text" id="officeCnpj">
+                </div>
+                <div class="form-group">
+                    <label>Endereço</label>
+                    <input type="text" id="officeAddress">
+                </div>
+                <div class="form-group">
+                    <label>Responsável</label>
+                    <input type="text" id="officeResponsible">
+                </div>
+                <div class="form-group">
+                    <label>Contato</label>
+                    <input type="text" id="officeContact">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Criar</button>
+                <button type="button" onclick="closeModal('officeModal')" class="btn btn-secondary btn-full mt-2">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Nova Campanha -->
+    <div id="campaignModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nova Campanha</h2>
+            </div>
+            <form id="campaignForm">
+                <div class="form-group">
+                    <label>Nome da Campanha *</label>
+                    <input type="text" id="campaignName" required>
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea id="campaignDescription" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Duração *</label>
+                    <select id="campaignDuration" required>
+                        <option value="3">3 meses</option>
+                        <option value="6">6 meses</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Data de Início *</label>
+                    <input type="date" id="campaignStartDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Pontos Mínimos por Loja</label>
+                    <input type="number" id="campaignMinPoints" value="2000">
+                </div>
+                <div class="form-group">
+                    <label>Percentual Mínimo de Lojas (%)</label>
+                    <input type="number" id="campaignMinPercentage" value="60" min="0" max="100">
+                </div>
+                <div class="form-group">
+                    <label>Prêmio 1º Lugar</label>
+                    <input type="text" id="campaignPrize1" placeholder="Ex: R$ 5.000 + Viagem">
+                </div>
+                <div class="form-group">
+                    <label>Prêmio 2º Lugar</label>
+                    <input type="text" id="campaignPrize2" placeholder="Ex: R$ 3.000">
+                </div>
+                <div class="form-group">
+                    <label>Prêmio 3º Lugar</label>
+                    <input type="text" id="campaignPrize3" placeholder="Ex: R$ 1.000">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Criar Campanha</button>
+                <button type="button" onclick="closeModal('campaignModal')" class="btn btn-secondary btn-full mt-2">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Inserir Pontos -->
+    <div id="pointsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Inserir Pontos</h2>
+            </div>
+            <form id="pointsForm">
+                <div class="form-group">
+                    <label>Arquiteto *</label>
+                    <select id="pointsArquiteto" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Loja *</label>
+                    <select id="pointsLojista" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Pontos *</label>
+                    <input type="number" id="pointsValue" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label>Data</label>
+                    <input type="date" id="pointsDate" value="">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Confirmar</button>
+                <button type="button" onclick="closeModal('pointsModal')" class="btn btn-secondary btn-full mt-2">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Configurar Logo -->
+    <div id="logoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Configurar Logo</h2>
+            </div>
+            <form id="logoForm">
+                <div class="form-group">
+                    <label>Arquivo de Logo (PNG, JPG, SVG)</label>
+                    <input type="file" id="logoFile" accept="image/*" required>
+                </div>
+                <p class="text-muted" style="font-size:0.85rem;margin-bottom:16px;">A logo será exibida na tela de login e em toda a plataforma.</p>
+                <button type="submit" class="btn btn-primary btn-full">Salvar Logo</button>
+                <button type="button" onclick="removeLogo()" class="btn btn-full mt-2" style="background:#FEE2E2;color:#DC2626;border:1px solid #FECACA;">Remover Logo</button>
+                <button type="button" onclick="closeModal('logoModal')" class="btn btn-secondary btn-full mt-2">Cancelar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script>
+        const user = requireAuth('admin');
+        if (user) {
+            document.getElementById('userName').textContent = user.name;
+            loadDashboard();
+        }
+
+        // Data de hoje
+        document.getElementById('pointsDate').value = new Date().toISOString().split('T')[0];
+
+        async function loadDashboard() {
+            await Promise.all([
+                loadStats(),
+                loadRankings(),
+                loadCampaigns(),
+                loadUsersForPoints()
+            ]);
+        }
+
+        async function loadStats() {
+            try {
+                const stats = await API.stats.dashboard();
+                document.getElementById('statsGrid').innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-label">Arquitetos</div>
+                        <div class="stat-value">${stats.arquitetos || 0}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Lojistas</div>
+                        <div class="stat-value">${stats.lojistas || 0}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Escritórios</div>
+                        <div class="stat-value">${stats.offices || 0}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Pontos Total</div>
+                        <div class="stat-value">${formatCurrency(stats.total_points || 0)}</div>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Erro ao carregar stats:', error);
+            }
+        }
+
+        async function loadRankings() {
+            try {
+                const [arquitetos, lojistas, escritorios] = await Promise.all([
+                    API.rankings.arquitetos(),
+                    API.rankings.lojistas(),
+                    API.rankings.escritorios()
+                ]);
+
+                document.getElementById('rankingArquitetos').innerHTML = arquitetos.map((item, i) => `
+                    <div class="ranking-item">
+                        <div class="flex" style="align-items: center; gap: 16px;">
+                            <span class="ranking-position">${i + 1}º</span>
+                            <div class="ranking-info">
+                                <div class="ranking-name">${item.name}</div>
+                                <div class="ranking-detail">${item.email}</div>
+                            </div>
+                        </div>
+                        <span class="badge">${formatCurrency(item.total_points)} pts</span>
+                    </div>
+                `).join('');
+
+                document.getElementById('rankingLojistas').innerHTML = lojistas.map((item, i) => `
+                    <div class="ranking-item">
+                        <div class="flex" style="align-items: center; gap: 16px;">
+                            <span class="ranking-position">${i + 1}º</span>
+                            <div class="ranking-info">
+                                <div class="ranking-name">${item.name}</div>
+                                <div class="ranking-detail">${item.email}</div>
+                            </div>
+                        </div>
+                        <span class="badge">${formatCurrency(item.total_points)} pts</span>
+                    </div>
+                `).join('');
+
+                document.getElementById('rankingEscritorios').innerHTML = escritorios.map((item, i) => `
+                    <div class="ranking-item">
+                        <div class="flex" style="align-items: center; gap: 16px;">
+                            <span class="ranking-position">${i + 1}º</span>
+                            <div class="ranking-name">${item.name}</div>
+                        </div>
+                        <span class="badge">${formatCurrency(item.total_points)} pts</span>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar rankings:', error);
+            }
+        }
+
+        async function loadCampaigns() {
+            try {
+                const campaigns = await API.campaigns.list();
+                document.getElementById('campaignsList').innerHTML = campaigns.map(camp => `
+                    <div class="ranking-item" style="flex-wrap:wrap;gap:8px;">
+                        <div class="ranking-info" style="flex:1;min-width:200px;">
+                            <div class="ranking-name">${camp.name}</div>
+                            <div class="ranking-detail">
+                                ${camp.duration_months} meses &bull; ${formatDate(camp.start_date)} até ${formatDate(camp.end_date)}
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                            ${camp.active ? '<span class="badge badge-success">Ativa</span>' : '<span class="badge">Encerrada</span>'}
+                            <button onclick="viewCampaignAnalysis(${camp.id})" class="btn btn-sm btn-secondary">Ver Análise</button>
+                            ${camp.active
+                                ? `<button onclick="campaignAction(${camp.id},'finish','${camp.name.replace(/'/g,"\\'")}','Finalizar')" class="btn btn-sm btn-accent">Finalizar</button>`
+                                : `<button onclick="campaignAction(${camp.id},'activate','${camp.name.replace(/'/g,"\\'")}','Reativar')" class="btn btn-sm btn-accent">Reativar</button>`
+                            }
+                            <button onclick="campaignAction(${camp.id},'reset','${camp.name.replace(/'/g,"\\'")}','Zerar pontos de')" class="btn btn-sm btn-secondary">Zerar</button>
+                            <button onclick="campaignAction(${camp.id},'delete','${camp.name.replace(/'/g,"\\'")}','Excluir permanentemente')" class="btn btn-sm" style="background:#FEE2E2;color:#DC2626;border:1px solid #FECACA;">Excluir</button>
+                        </div>
+                    </div>
+                `).join('') || '<p class="text-muted">Nenhuma campanha cadastrada</p>';
+            } catch (error) {
+                console.error('Erro ao carregar campanhas:', error);
+            }
+        }
+
+        async function campaignAction(campaignId, action, campaignName, verb) {
+            const confirmMsgs = {
+                delete: `Excluir permanentemente a campanha "${campaignName}" e todos os seus pontos? Esta ação não pode ser desfeita.`,
+                reset: `Zerar todos os pontos da campanha "${campaignName}"? Esta ação não pode ser desfeita.`,
+                finish: `Finalizar a campanha "${campaignName}"?`,
+                activate: `Reativar a campanha "${campaignName}"?`
+            };
+            if (!confirm(confirmMsgs[action])) return;
+            try {
+                const result = await API.campaigns.action(campaignId, action);
+                showSuccess(result.message || 'Ação realizada com sucesso!');
+                await loadDashboard();
+                if (action === 'finish') {
+                    switchTab('analysis');
+                    await loadCampaignAnalysis(campaignId);
+                }
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        async function loadUsersForPoints() {
+            try {
+                const [arquitetos, lojistas] = await Promise.all([
+                    API.users.arquitetos(),
+                    API.users.lojistas()
+                ]);
+
+                const arqSelect = document.getElementById('pointsArquiteto');
+                arqSelect.innerHTML = '<option value="">Selecione...</option>' +
+                    arquitetos.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+
+                const lojSelect = document.getElementById('pointsLojista');
+                lojSelect.innerHTML = '<option value="">Selecione...</option>' +
+                    lojistas.map(l => `<option value="${l.id}">${l.name}</option>`).join('');
+            } catch (error) {
+                console.error('Erro ao carregar usuários:', error);
+            }
+        }
+
+        async function viewCampaignAnalysis(campaignId) {
+            switchTab('analysis');
+            await loadCampaignAnalysis(campaignId);
+        }
+
+        async function loadCampaignAnalysis(campaignId = null) {
+            const contentEl = document.getElementById('analysisContent');
+            try {
+                const campaigns = await API.campaigns.list();
+                if (!campaigns.length) {
+                    contentEl.innerHTML = '<p class="text-muted">Nenhuma campanha cadastrada</p>';
+                    return;
+                }
+
+                // Se não passou campaignId, pega campanha ativa ou a mais recente
+                if (!campaignId) {
+                    const active = campaigns.find(c => c.active);
+                    campaignId = active ? active.id : campaigns[0].id;
+                }
+
+                // Selector de campanha sempre visível
+                const selectorHTML = `
+                    <div class="form-group" style="max-width:400px;margin-bottom:20px;">
+                        <label><strong>Selecionar Campanha</strong></label>
+                        <select id="analysisCampaignSelect" onchange="loadCampaignAnalysis(parseInt(this.value))">
+                            ${campaigns.map(c => `<option value="${c.id}" ${c.id == campaignId ? 'selected' : ''}>${c.name} ${c.active ? '(Ativa)' : '(Encerrada)'}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div id="analysisDetails"></div>
+                `;
+                contentEl.innerHTML = selectorHTML;
+
+                const analysis = await API.campaigns.analysis(campaignId);
+                const detailsEl = document.getElementById('analysisDetails');
+
+                // Ganhadores com premiacoes
+                let ganhadorHTML = '';
+                if (analysis.ganhadores && analysis.ganhadores.length > 0) {
+                    ganhadorHTML = `
+                        <h4 class="mb-2">Ganhadores</h4>
+                        ${analysis.ganhadores.map((g, i) => `
+                            <div class="ranking-item" style="border:2px solid ${i===0?'#CA8A04':i===1?'#94A3B8':'#CD7C2F'}; background:${i===0?'#FFFBEB':i===1?'#F8FAFC':'#FFF7ED'}; margin-bottom:8px;">
+                                <div>
+                                    <div class="ranking-name">${g.colocacao}º Lugar - ${g.name}</div>
+                                    <div class="ranking-detail">
+                                        ${g.escritorio_nome ? `Escritório: ${g.escritorio_nome} &bull; ` : ''}${g.lojas_qualificadas} lojas qualificadas
+                                    </div>
+                                    ${g.premio ? `<div style="color:#B45309;font-weight:600;margin-top:4px;">Prêmio: ${g.premio}</div>` : ''}
+                                </div>
+                                <span class="badge">${formatCurrency(g.pontos_total)} pts</span>
+                            </div>
+                        `).join('')}
+                    `;
+                } else if (analysis.campanha_finalizada) {
+                    ganhadorHTML = '<div class="alert alert-info">Campanha finalizada sem ganhadores qualificados.</div>';
+                }
+
+                detailsEl.innerHTML = `
+                    <h3>${analysis.campaign.name}</h3>
+                    <p class="text-muted mb-3">
+                        ${formatDate(analysis.campaign.start_date)} até ${formatDate(analysis.campaign.end_date)}
+                        ${analysis.campanha_finalizada ? '<span class="badge" style="margin-left:8px;">Encerrada</span>' : '<span class="badge badge-success" style="margin-left:8px;">Ativa</span>'}
+                    </p>
+
+                    <div class="alert alert-info mb-3">
+                        <strong>Critérios de Qualificação:</strong><br>
+                        &bull; ${analysis.criterios.lojas_necessarias} lojas (${analysis.criterios.percentual_lojas}% de ${analysis.criterios.total_lojas} lojas)<br>
+                        &bull; Mínimo ${analysis.criterios.pontos_minimos_por_loja} pontos por loja
+                    </div>
+
+                    ${(analysis.premiacoes.primeiro || analysis.premiacoes.segundo || analysis.premiacoes.terceiro) ? `
+                        <div class="alert mb-3" style="background:#FFFBEB;border-color:#D97706;">
+                            <strong>Premiações:</strong><br>
+                            ${analysis.premiacoes.primeiro ? `&bull; 1º lugar: ${analysis.premiacoes.primeiro}<br>` : ''}
+                            ${analysis.premiacoes.segundo ? `&bull; 2º lugar: ${analysis.premiacoes.segundo}<br>` : ''}
+                            ${analysis.premiacoes.terceiro ? `&bull; 3º lugar: ${analysis.premiacoes.terceiro}` : ''}
+                        </div>
+                    ` : ''}
+
+                    ${ganhadorHTML}
+
+                    <h4 class="mt-4 mb-2">Ranking de Arquitetos na Campanha</h4>
+                    ${analysis.ranking_arquitetos.slice(0,15).map((arq, i) => `
+                        <div class="ranking-item ${arq.qualificado ? '' : ''}">
+                            <div style="flex:1;">
+                                <div class="ranking-name">${i+1}º ${arq.name} ${arq.qualificado ? '<span class="badge badge-success" style="font-size:0.7rem;">Qualificado</span>' : ''}</div>
+                                <div class="ranking-detail">
+                                    ${arq.lojas_qualificadas}/${arq.lojas_necessarias} lojas qualificadas
+                                    ${!arq.qualificado ? ` &bull; Faltam ${arq.faltam_lojas} lojas` : ''}
+                                </div>
+                                <div style="height:6px;background:#E7D7C9;border-radius:3px;margin-top:6px;max-width:220px;">
+                                    <div style="height:100%;background:var(--color-accent);border-radius:3px;width:${Math.min(100,arq.progresso_percentual)}%;"></div>
+                                </div>
+                            </div>
+                            <span class="badge">${formatCurrency(arq.pontos_total)} pts</span>
+                        </div>
+                    `).join('')}
+
+                    ${analysis.proximos_vencer.length > 0 ? `
+                        <h4 class="mt-4 mb-2">Próximos de Vencer (80%+)</h4>
+                        ${analysis.proximos_vencer.map(arq => `
+                            <div class="ranking-item">
+                                <div>
+                                    <div class="ranking-name">${arq.name}</div>
+                                    <div class="ranking-detail">Faltam ${arq.faltam_lojas} lojas</div>
+                                </div>
+                                <span class="badge">${arq.progresso_percentual}%</span>
+                            </div>
+                        `).join('')}
+                    ` : ''}
+
+                    <h4 class="mt-4 mb-2">Escritórios no Ranking</h4>
+                    ${analysis.ranking_escritorios.filter(e => parseInt(e.pontos_total) > 0).map((esc, i) => `
+                        <div class="ranking-item">
+                            <div class="flex" style="align-items:center;gap:16px;">
+                                <span class="ranking-position">${i+1}º</span>
+                                <div>
+                                    <div class="ranking-name">${esc.name}</div>
+                                    <div class="ranking-detail">${esc.arquitetos_ativos} arquiteto(s)</div>
+                                </div>
+                            </div>
+                            <span class="badge">${formatCurrency(esc.pontos_total)} pts</span>
+                        </div>
+                    `).join('') || '<p class="text-muted">Nenhum escritório com pontos nesta campanha</p>'}
+
+                    <h4 class="mt-4 mb-2">Lojas no Ranking</h4>
+                    ${analysis.ranking_lojistas.filter(l => parseInt(l.pontos_distribuidos) > 0).map((loj, i) => `
+                        <div class="ranking-item">
+                            <div class="flex" style="align-items:center;gap:16px;">
+                                <span class="ranking-position">${i+1}º</span>
+                                <div>
+                                    <div class="ranking-name">${loj.name}</div>
+                                    <div class="ranking-detail">${loj.arquitetos_atendidos} arquiteto(s) atendido(s)</div>
+                                </div>
+                            </div>
+                            <span class="badge">${formatCurrency(loj.pontos_distribuidos)} pts</span>
+                        </div>
+                    `).join('') || '<p class="text-muted">Nenhuma loja com pontos nesta campanha</p>'}
+                `;
+            } catch (error) {
+                console.error('Erro ao carregar análise:', error);
+                contentEl.innerHTML = '<p class="alert alert-error">Erro ao carregar análise. Verifique o console para detalhes.</p>';
+            }
+        }
+
+        async function checkBirthdays() {
+            try {
+                const result = await API.birthdays.check();
+                if (result.aniversariantes_hoje === 0) {
+                    alert('Nenhum aniversariante hoje!');
+                } else {
+                    alert(`🎉 ${result.aniversariantes_hoje} aniversariante(s) hoje!\n\nMensagens enviadas: ${result.mensagens_enviadas.length}`);
+                }
+            } catch (error) {
+                alert('Erro ao verificar aniversários');
+            }
+        }
+
+        // Forms
+        document.getElementById('officeForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await API.offices.create({
+                    name: document.getElementById('officeName').value,
+                    cnpj: document.getElementById('officeCnpj').value,
+                    address: document.getElementById('officeAddress').value,
+                    responsible: document.getElementById('officeResponsible').value,
+                    contact: document.getElementById('officeContact').value
+                });
+                closeModal('officeModal');
+                e.target.reset();
+                showSuccess('Escritório criado!');
+                loadDashboard();
+            } catch (error) {
+                showError(error.message);
+            }
+        });
+
+        document.getElementById('campaignForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await API.campaigns.create({
+                    name: document.getElementById('campaignName').value,
+                    description: document.getElementById('campaignDescription').value,
+                    duration_months: parseInt(document.getElementById('campaignDuration').value),
+                    start_date: document.getElementById('campaignStartDate').value,
+                    min_points_per_store: parseInt(document.getElementById('campaignMinPoints').value),
+                    min_store_percentage: parseInt(document.getElementById('campaignMinPercentage').value),
+                    premio_primeiro: document.getElementById('campaignPrize1').value,
+                    premio_segundo: document.getElementById('campaignPrize2').value,
+                    premio_terceiro: document.getElementById('campaignPrize3').value
+                });
+                closeModal('campaignModal');
+                e.target.reset();
+                showSuccess('Campanha criada!');
+                loadDashboard();
+            } catch (error) {
+                showError(error.message);
+            }
+        });
+
+        document.getElementById('pointsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await API.points.create({
+                    arquiteto_id: document.getElementById('pointsArquiteto').value,
+                    lojista_id: document.getElementById('pointsLojista').value,
+                    points: parseInt(document.getElementById('pointsValue').value),
+                    transaction_date: document.getElementById('pointsDate').value
+                });
+                closeModal('pointsModal');
+                e.target.reset();
+                showSuccess('Pontos inseridos com sucesso!');
+                loadDashboard();
+            } catch (error) {
+                showError(error.message);
+            }
+        });
+
+        // Remover logo
+        async function removeLogo() {
+            if (!confirm('Remover a logo da plataforma?')) return;
+            try {
+                await API.logo.remove();
+                closeModal('logoModal');
+                showSuccess('Logo removida com sucesso!');
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        // Logo upload
+        document.getElementById('logoForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileInput = document.getElementById('logoFile');
+            if (!fileInput.files[0]) return;
+            const formData = new FormData();
+            formData.append('logo', fileInput.files[0]);
+            try {
+                await API.logo.upload(formData);
+                closeModal('logoModal');
+                e.target.reset();
+                showSuccess('Logo atualizada com sucesso!');
+            } catch (error) {
+                showError(error.message);
+            }
+        });
+
+        // Relatórios
+        async function loadReportFilters() {
+            try {
+                const data = await API.reports.get({});
+                const opts = data.opcoes_filtro;
+                document.getElementById('filterCampaign').innerHTML =
+                    '<option value="">Todas</option>' +
+                    opts.campanhas.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+                document.getElementById('filterLoja').innerHTML =
+                    '<option value="">Todas</option>' +
+                    opts.lojas.map(l => `<option value="${l.id}">${l.name}</option>`).join('');
+                document.getElementById('filterEscritorio').innerHTML =
+                    '<option value="">Todos</option>' +
+                    opts.escritorios.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
+            } catch (error) {
+                console.error('Erro ao carregar filtros:', error);
+            }
+        }
+
+        async function applyReportFilters() {
+            const monthVal = document.getElementById('filterMonth').value;
+            const yearVal = document.getElementById('filterYear').value;
+            const campaignId = document.getElementById('filterCampaign').value;
+            const lojaId = document.getElementById('filterLoja').value;
+            const escritorioId = document.getElementById('filterEscritorio').value;
+
+            const filters = {};
+            if (monthVal) filters.month = monthVal;
+            if (yearVal) filters.year = yearVal;
+            if (campaignId) filters.campaign_id = campaignId;
+            if (lojaId) filters.lojista_id = lojaId;
+            if (escritorioId) filters.office_id = escritorioId;
+
+            const resultsEl = document.getElementById('reportResults');
+            resultsEl.innerHTML = '<p class="text-muted">Carregando...</p>';
+
+            try {
+                const data = await API.reports.get(filters);
+                resultsEl.innerHTML = `
+                    <div class="stats-grid" style="margin-bottom:24px;">
+                        <div class="stat-card">
+                            <div class="stat-label">Arquitetos que Pontuaram</div>
+                            <div class="stat-value">${data.resumo.arquitetos_pontuaram}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Lojas que Pontuaram</div>
+                            <div class="stat-value">${data.resumo.lojas_pontuaram}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Total de Pontos</div>
+                            <div class="stat-value">${formatCurrency(data.resumo.total_pontos)}</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Transações</div>
+                            <div class="stat-value">${data.resumo.num_transacoes}</div>
+                        </div>
+                    </div>
+
+                    <h4 class="mb-2">Top Arquitetos</h4>
+                    ${data.rankings.top_arquitetos.length ? data.rankings.top_arquitetos.map((a, i) => `
+                        <div class="ranking-item">
+                            <div class="flex" style="align-items:center;gap:16px;">
+                                <span class="ranking-position">${i+1}º</span>
+                                <div>
+                                    <div class="ranking-name">${a.name}</div>
+                                    <div class="ranking-detail">${a.email}</div>
+                                </div>
+                            </div>
+                            <span class="badge">${formatCurrency(a.pontos)} pts</span>
+                        </div>
+                    `).join('') : '<p class="text-muted">Nenhum arquiteto com pontos no período</p>'}
+
+                    <h4 class="mt-4 mb-2">Top Lojas</h4>
+                    ${data.rankings.top_lojas.length ? data.rankings.top_lojas.map((l, i) => `
+                        <div class="ranking-item">
+                            <div class="flex" style="align-items:center;gap:16px;">
+                                <span class="ranking-position">${i+1}º</span>
+                                <div class="ranking-name">${l.name}</div>
+                            </div>
+                            <span class="badge">${formatCurrency(l.pontos)} pts</span>
+                        </div>
+                    `).join('') : '<p class="text-muted">Nenhuma loja com pontos no período</p>'}
+
+                    <h4 class="mt-4 mb-2">Top Escritórios</h4>
+                    ${data.rankings.top_escritorios.length ? data.rankings.top_escritorios.map((e, i) => `
+                        <div class="ranking-item">
+                            <div class="flex" style="align-items:center;gap:16px;">
+                                <span class="ranking-position">${i+1}º</span>
+                                <div class="ranking-name">${e.name}</div>
+                            </div>
+                            <span class="badge">${formatCurrency(e.pontos)} pts</span>
+                        </div>
+                    `).join('') : '<p class="text-muted">Nenhum escritório com pontos no período</p>'}
+                `;
+            } catch (error) {
+                showError('Erro ao gerar relatório');
+                console.error(error);
+            }
+        }
+
+        // Tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        // Modals
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+    </script>
+
+    <style>
+        .tab-btn {
+            padding: 12px 24px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover {
+            color: var(--color-text);
+        }
+        .tab-btn.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-accent);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</body>
+</html>
